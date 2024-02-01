@@ -12,7 +12,7 @@ class JuzListScreen extends StatelessWidget {
         backgroundColor: Colors.blueGrey,
       ),
       body: ListView.builder(
-        itemCount: juz.length,
+        itemCount: 30,
         itemBuilder: (context, index) {
           final juzNumber = index + 1;
 
