@@ -57,7 +57,7 @@ class _TestPage extends State<TestScreen> {
 
   Future<void> playNextAyah() async {
     if (ayah.numberInSurah >= ayahs.length) {
-      showSnackBar(context, 'End of Surah');
+      showSnackBar(context, 'Sure Sonu');
 
       return;
     }
@@ -69,7 +69,7 @@ class _TestPage extends State<TestScreen> {
 
   Future<void> playPreviousAyah() async {
     if (ayah.numberInSurah == 1) {
-      showSnackBar(context, 'Beginning of Surah');
+      showSnackBar(context, 'Sure Başı');
 
       return;
     }
@@ -120,7 +120,7 @@ class _TestPage extends State<TestScreen> {
           children: [
             if (ayah.numberInSurah < ayahs.length)
               const Text(
-                'Guess the next Ayah!!!',
+                'Bir Sonraki Ayete Geç!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.blueGrey,

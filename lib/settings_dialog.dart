@@ -31,7 +31,7 @@ class _SettingDialogState extends State<SettingDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text(
-        'Settings',
+        'Ayarlar',
         style: TextStyle(
           color: Colors.blueGrey,
           fontSize: 15,
@@ -49,7 +49,7 @@ class _SettingDialogState extends State<SettingDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Autoplay verse',
+                  'Ayeti otomatik yürüt',
                   style: TextStyle(fontSize: 12),
                 ),
                 Switch(
@@ -67,14 +67,14 @@ class _SettingDialogState extends State<SettingDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancel'),
+          child: const Text('İptal'),
         ),
         TextButton(
           onPressed: () {
             storageServices.setAutoPlay(autoPlay);
             Navigator.of(context).pop(true);
           },
-          child: const Text('Save'),
+          child: const Text('Kaydet'),
         ),
       ],
     );

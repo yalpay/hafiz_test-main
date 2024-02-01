@@ -62,7 +62,7 @@ class _SplashScreen extends State<SplashScreen> {
                     ),
                   ),
                   Text(
-                    '(Test your quran skill)',
+                    'Ezberini test et',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20.0,

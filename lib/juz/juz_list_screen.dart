@@ -23,7 +23,7 @@ class JuzListScreen extends StatelessWidget {
                 height: 50,
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  '$juzNumber) ${juz[index]}',
+                  '$juzNumber. Cüz',
                   style: const TextStyle(
                     color: Colors.blueGrey,
                     fontSize: 20.0,
