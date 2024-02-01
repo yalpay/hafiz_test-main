@@ -61,7 +61,24 @@ class _SettingDialogState extends State<SettingDialog> {
                   activeColor: Colors.green,
                 )
               ],
-            )
+            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Ayetler Sayfa Başından Olsun',
+                style: TextStyle(fontSize: 12),
+              ),
+              Switch(
+                value: autoPlay,
+                onChanged: (_) {
+                  setState(() => autoPlay = !autoPlay);
+                },
+                activeTrackColor: Colors.blueGrey,
+                activeColor: Colors.green,
+              )
+            ],
+          )
         ],
       ),
       actions: [

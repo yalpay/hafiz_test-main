@@ -9,7 +9,7 @@ class SurahListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hafiz'),
+        title: const Text('Sureler'),
         backgroundColor: Colors.blueGrey,
       ),
       body: ListView.builder(

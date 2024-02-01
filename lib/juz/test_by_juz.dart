@@ -49,7 +49,7 @@ class _TestPage extends State<TestByJuz> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Test By Juz'),
+        title: const Text('Cüz Listesi'),
         backgroundColor: Colors.blueGrey,
       ),
       body: Column(

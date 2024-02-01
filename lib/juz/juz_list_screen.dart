@@ -8,7 +8,7 @@ class JuzListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hafiz - Juz List'),
+        title: const Text('Cüzler'),
         backgroundColor: Colors.blueGrey,
       ),
       body: ListView.builder(

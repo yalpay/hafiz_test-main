@@ -22,16 +22,16 @@ class _MainMenu extends State<MainMenu> {
         return await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Are you sure?'),
-            content: const Text('Do you want to exit'),
+            title: const Text('Emin misin?'),
+            content: const Text('Çıkmak istiyor musun?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('No'),
+                child: const Text('Hayır'),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Yes'),
+                child: const Text('Evet'),
               ),
             ],
           ),
@@ -66,7 +66,7 @@ class _MainMenu extends State<MainMenu> {
             children: [
               CustomButton(
                 text: const Text(
-                  'Test by Surah',
+                  'Sureden Sor',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 15,
@@ -91,7 +91,7 @@ class _MainMenu extends State<MainMenu> {
               const SizedBox(height: 20),
               CustomButton(
                 text: const Text(
-                  'Test by Juz',
+                  'Cüzden Sor',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 15,
@@ -116,7 +116,7 @@ class _MainMenu extends State<MainMenu> {
               const SizedBox(height: 20),
               CustomButton(
                 text: const Text(
-                  'Entire Quran',
+                  'Bütün Kuran',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 15,

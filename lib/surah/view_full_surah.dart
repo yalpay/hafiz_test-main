@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_animate/flutter_animate.dart';
+import 'package:hafiz_test/data/surah_list.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
@@ -73,7 +73,7 @@ class _Surah extends State<SurahScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '${surah.number}. ${surah.englishName}: ${surah.englishNameTranslation}',
+          '${surah.number}. ${surahs[surah.number - 1]}',
         ),
         backgroundColor: Colors.blueGrey,
       ),
@@ -101,13 +101,6 @@ class _Surah extends State<SurahScreen> {
                               fontSize: 20,
                               color: Colors.blueGrey,
                               fontFamily: 'Quran',
-                            ),
-                          ),
-                          Text(
-                            '${surah.number}. ${surah.englishName}: ${surah.englishNameTranslation}',
-                            style: const TextStyle(
-                              fontSize: 20,
-                              color: Colors.blueGrey,
                             ),
                           ),
                         ],

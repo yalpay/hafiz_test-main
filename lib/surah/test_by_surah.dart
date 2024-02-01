@@ -4,6 +4,7 @@ import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/ayah.services.dart';
 import 'package:hafiz_test/services/surah.services.dart';
 import 'package:hafiz_test/test_screen.dart';
+import 'package:hafiz_test/data/surah_list.dart';
 
 class TestBySurah extends StatefulWidget {
   final int surahNumber;
@@ -60,7 +61,7 @@ class _TestPage extends State<TestBySurah> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Test by Surah'),
+        title: const Text('Sure Listesi'),
         backgroundColor: Colors.blueGrey,
       ),
       body: Column(

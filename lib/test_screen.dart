@@ -7,6 +7,7 @@ import 'package:hafiz_test/services/storage.services.dart';
 import 'package:hafiz_test/surah/view_full_surah.dart';
 import 'package:hafiz_test/util/util.dart';
 import 'package:hafiz_test/widget/button.dart';
+import 'package:hafiz_test/data/surah_list.dart';
 
 class TestScreen extends StatefulWidget {
   final Surah surah;
@@ -148,13 +149,13 @@ class _TestPage extends State<TestScreen> {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: '(${surah.englishName})',
+                    text: surahs[surah.number - 1],
                     style: const TextStyle(
                       color: Colors.blueGrey,
                     ),
                   ),
                   TextSpan(
-                    text: ' - (Q${surah.number} v${ayah.numberInSurah})',
+                    text: ' - ${ayah.numberInSurah}.Ayet',
                     style: const TextStyle(
                       color: Colors.blueGrey,
                       fontWeight: FontWeight.bold,
@@ -196,7 +197,7 @@ class _TestPage extends State<TestScreen> {
                 Expanded(
                   child: CustomButton(
                     text: const Text(
-                      'Previous',
+                      'Önceki Ayet',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -216,7 +217,7 @@ class _TestPage extends State<TestScreen> {
                   child: CustomButton(
                     iconPosition: IconPosition.right,
                     text: const Text(
-                      'Next',
+                      'Sonraki Ayet',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -235,9 +236,9 @@ class _TestPage extends State<TestScreen> {
             ),
             const SizedBox(height: 30),
             CustomButton(
-              width: 200,
+              width: 300,
               text: const Text(
-                'View All',
+                'Tüm Sureyi Görüntüle',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -262,9 +263,9 @@ class _TestPage extends State<TestScreen> {
             ),
             const SizedBox(height: 20),
             CustomButton(
-              width: 200,
+              width: 300,
               text: const Text(
-                'Refresh',
+                'Ayeti Yeniden Dinle',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
