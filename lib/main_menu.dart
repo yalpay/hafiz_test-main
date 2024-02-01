@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
 import 'package:hafiz_test/juz/juz_list_screen.dart';
+import 'package:hafiz_test/page/test_by_page.dart';
 import 'package:hafiz_test/settings_dialog.dart';
 import 'package:hafiz_test/surah/surah_list_screen.dart';
 import 'package:hafiz_test/surah/test_by_surah.dart';
@@ -17,6 +18,7 @@ class MainMenu extends StatefulWidget {
 class _MainMenu extends State<MainMenu> {
   @override
   Widget build(BuildContext context) {
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         return await showDialog(
@@ -64,6 +66,31 @@ class _MainMenu extends State<MainMenu> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              CustomButton(
+                text: const Text(
+                  'Sayfa Başından Sor',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                icon: const Icon(
+                  FlutterIslamicIcons.quran,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) {
+                        return const TestByPage();
+                      },
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
               CustomButton(
                 text: const Text(
                   'Sureden Sor',

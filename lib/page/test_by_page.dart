@@ -1,25 +1,23 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:hafiz_test/juz/test_screen.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
+import 'package:hafiz_test/page/test_screen.dart';
 import 'package:hafiz_test/services/ayah.services.dart';
 import 'package:hafiz_test/services/surah.services.dart';
 
-class TestByJuz extends StatefulWidget {
-  final int juzNumber;
-
-  const TestByJuz({Key? key, required this.juzNumber}) : super(key: key);
+class TestByPage extends StatefulWidget {
+  const TestByPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _TestPage();
 }
 
-class _TestPage extends State<TestByJuz> {
+class _TestPage extends State<TestByPage> {
   bool isLoading = false;
 
   List<Ayah> ayahs = [];
-  late Ayah ayah;
+  List<Ayah> page = [];
 
   bool autoplay = true;
   Surah surah = Surah();
@@ -27,13 +25,9 @@ class _TestPage extends State<TestByJuz> {
   Future<void> init() async {
     setState(() => isLoading = true);
 
-    final ayahFromJuz =
-        await AyahServices().getRandomAyahFromJuz(widget.juzNumber);
-
-    surah = await SurahServices().getSurah(ayahFromJuz.surah!.number);
+    page = await AyahServices().getRandomPage();
+    surah = await SurahServices().getSurah(page.first.surah!.number);
     ayahs = surah.ayahs;
-
-    ayah = ayahs.firstWhere((ayah) => ayah.number == ayahFromJuz.number);
 
     setState(() => isLoading = false);
   }
@@ -49,7 +43,7 @@ class _TestPage extends State<TestByJuz> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cüz Listesi'),
+        title: const Text('Ana Sayfa'),
         backgroundColor: Colors.blueGrey,
       ),
       body: Column(
@@ -64,10 +58,11 @@ class _TestPage extends State<TestByJuz> {
               ),
             )
           else
-            JuzTestScreen(
+            PageTestScreen(
               surah: surah,
-              ayah: ayah,
+              ayah: page.first,
               ayahs: ayahs,
+              page: page,
               onRefresh: () async => await init(),
             ),
         ],

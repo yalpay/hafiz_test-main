@@ -9,13 +9,13 @@ import 'package:hafiz_test/util/util.dart';
 import 'package:hafiz_test/widget/button.dart';
 import 'package:hafiz_test/data/surah_list.dart';
 
-class TestScreen extends StatefulWidget {
+class JuzTestScreen extends StatefulWidget {
   final Surah surah;
   final Ayah ayah;
   final List<Ayah> ayahs;
   final Function()? onRefresh;
 
-  const TestScreen({
+  const JuzTestScreen({
     Key? key,
     required this.surah,
     required this.ayah,
@@ -27,7 +27,7 @@ class TestScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _TestPage();
 }
 
-class _TestPage extends State<TestScreen> {
+class _TestPage extends State<JuzTestScreen> {
   final audioPlayer = AudioPlayer();
   final storageServices = StorageServices();
 
@@ -240,7 +240,7 @@ class _TestPage extends State<TestScreen> {
             CustomButton(
               width: 300,
               text: const Text(
-                'Tüm Sureyi Görüntüle',
+                'Tam Sureyi Görüntüle',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,

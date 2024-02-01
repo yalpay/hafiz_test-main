@@ -40,13 +40,24 @@ class AyahServices {
     return Ayah();
   }
 
+  Future<List<Ayah>> getRandomPage() async {
+    final random = Random();
+    final page = random.nextInt(600);
+    final res = await _networkServices.get('page/$page/quran-uthmani');
+    final body = json.decode(res.body);
+
+    if (body != null) {
+      final ayahs = Ayah.fromJsonList(body['data']['ayahs']);
+      return ayahs;
+    }
+
+    return [];
+  }
+
   Ayah getRandomAyahForSurah(List<Ayah> ayahs) {
     try {
-      int min = 0;
-      int max = ayahs.length - 1;
-
       final random = Random();
-      final range = min + random.nextInt(max - min);
+      final range = random.nextInt(ayahs.length - 1);
 
       final ayah = ayahs[range];
 

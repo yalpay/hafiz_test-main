@@ -3,23 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
+import 'package:hafiz_test/page/view_full_page.dart';
 import 'package:hafiz_test/services/storage.services.dart';
-import 'package:hafiz_test/surah/view_full_surah.dart';
 import 'package:hafiz_test/util/util.dart';
 import 'package:hafiz_test/widget/button.dart';
 import 'package:hafiz_test/data/surah_list.dart';
 
-class TestScreen extends StatefulWidget {
+class PageTestScreen extends StatefulWidget {
   final Surah surah;
   final Ayah ayah;
   final List<Ayah> ayahs;
+  final List<Ayah> page;
   final Function()? onRefresh;
 
-  const TestScreen({
+  const PageTestScreen({
     Key? key,
     required this.surah,
     required this.ayah,
     this.ayahs = const [],
+    required this.page,
     this.onRefresh,
   }) : super(key: key);
 
@@ -27,7 +29,7 @@ class TestScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _TestPage();
 }
 
-class _TestPage extends State<TestScreen> {
+class _TestPage extends State<PageTestScreen> {
   final audioPlayer = AudioPlayer();
   final storageServices = StorageServices();
 
@@ -240,7 +242,7 @@ class _TestPage extends State<TestScreen> {
             CustomButton(
               width: 300,
               text: const Text(
-                'Tüm Sureyi Görüntüle',
+                'Tüm Sayfayı Görüntüle',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -257,7 +259,9 @@ class _TestPage extends State<TestScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (_) {
-                      return SurahScreen(surah: surah);
+                      return PageScreen(
+                        page: widget.page,
+                      );
                     },
                   ),
                 );
