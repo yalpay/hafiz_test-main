@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hafiz_test/data/juz_list.dart';
 import 'package:hafiz_test/juz/test_by_juz.dart';
 
 class JuzListScreen extends StatelessWidget {
