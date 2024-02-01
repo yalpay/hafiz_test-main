@@ -4,9 +4,11 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/services/network.services.dart';
+import 'package:hafiz_test/services/storage.services.dart';
 
 class AyahServices {
   final _networkServices = NetworkServices();
+  final storageServices = StorageServices();
 
   Future<List<Ayah>> getSurahAyahs(int surahNumber) async {
     try {
@@ -27,14 +29,26 @@ class AyahServices {
   }
 
   Future<Ayah> getRandomAyahFromJuz(int juzNumber) async {
-    final res = await _networkServices.get('juz/$juzNumber/quran-uthmani');
-    final body = json.decode(res.body);
+    final pagetop = await storageServices.checkPageTop();
+    if (pagetop) {
+      final random = Random();
+      final page = (juzNumber - 1) * 20 + random.nextInt(20);
+      final res = await _networkServices.get('page/$page/quran-uthmani');
+      final body = json.decode(res.body);
+      if (body != null) {
+        final ayahs = Ayah.fromJsonList(body['data']['ayahs']);
+        return ayahs.first;
+      }
+    } else {
+      final res = await _networkServices.get('juz/$juzNumber/quran-uthmani');
+      final body = json.decode(res.body);
 
-    if (body != null) {
-      final ayahs = Ayah.fromJsonList(body['data']['ayahs']);
-      final ayah = AyahServices().getRandomAyahForSurah(ayahs);
+      if (body != null) {
+        final ayahs = Ayah.fromJsonList(body['data']['ayahs']);
+        final ayah = AyahServices().getRandomAyahForSurah(ayahs);
 
-      return ayah;
+        return ayah;
+      }
     }
 
     return Ayah();
@@ -54,14 +68,23 @@ class AyahServices {
     return [];
   }
 
-  Ayah getRandomAyahForSurah(List<Ayah> ayahs) {
+  Future<Ayah> getRandomAyahForSurah(List<Ayah> ayahs) async {
     try {
       final random = Random();
-      final range = random.nextInt(ayahs.length - 1);
-
-      final ayah = ayahs[range];
-
-      return ayah;
+      final pagetop = await storageServices.checkPageTop();
+      if (pagetop == true) {
+        List<int> topPageAyahs = [];
+        for (int i = 1; i < ayahs.length; i++) {
+          if (ayahs[i].page > ayahs[i - 1].page) {
+            topPageAyahs.add(i);
+          }
+        }
+        final index = random.nextInt(topPageAyahs.length);
+        return ayahs[topPageAyahs[index]];
+      } else {
+        final range = random.nextInt(ayahs.length - 1);
+        return ayahs[range];
+      }
     } catch (error) {
       if (kDebugMode) {
         print(error);

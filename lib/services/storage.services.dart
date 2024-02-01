@@ -11,4 +11,15 @@ class StorageServices {
     SharedPreferences settings = await SharedPreferences.getInstance();
     return settings.setBool('autoplay', autoPlay);
   }
+
+  Future<bool> checkPageTop() async {
+    SharedPreferences settings = await SharedPreferences.getInstance();
+
+    return settings.getBool('pagetop') ?? true;
+  }
+
+  Future<bool> setPageTop(bool pageTop) async {
+    SharedPreferences settings = await SharedPreferences.getInstance();
+    return settings.setBool('pagetop', pageTop);
+  }
 }

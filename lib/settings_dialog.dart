@@ -10,6 +10,7 @@ class SettingDialog extends StatefulWidget {
 
 class _SettingDialogState extends State<SettingDialog> {
   bool autoPlay = true;
+  bool pageTop = false;
   bool isLoading = true;
   final storageServices = StorageServices();
 
@@ -70,9 +71,9 @@ class _SettingDialogState extends State<SettingDialog> {
                 style: TextStyle(fontSize: 12),
               ),
               Switch(
-                value: autoPlay,
+                value: pageTop,
                 onChanged: (_) {
-                  setState(() => autoPlay = !autoPlay);
+                  setState(() => pageTop = !pageTop);
                 },
                 activeTrackColor: Colors.blueGrey,
                 activeColor: Colors.green,
@@ -89,6 +90,7 @@ class _SettingDialogState extends State<SettingDialog> {
         TextButton(
           onPressed: () {
             storageServices.setAutoPlay(autoPlay);
+            storageServices.setPageTop(pageTop);
             Navigator.of(context).pop(true);
           },
           child: const Text('Kaydet'),

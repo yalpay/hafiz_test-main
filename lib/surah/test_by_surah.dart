@@ -51,7 +51,7 @@ class _TestPage extends State<TestBySurah> {
     }
 
     ayahs = surah.ayahs;
-    ayah = ayahServices.getRandomAyahForSurah(ayahs);
+    ayah = await ayahServices.getRandomAyahForSurah(ayahs);
 
     setState(() => isLoading = false);
   }
