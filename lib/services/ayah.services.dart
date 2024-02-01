@@ -79,6 +79,9 @@ class AyahServices {
             topPageAyahs.add(i);
           }
         }
+        if (topPageAyahs.isEmpty) {
+          return ayahs[0];
+        }
         final index = random.nextInt(topPageAyahs.length);
         return ayahs[topPageAyahs[index]];
       } else {
