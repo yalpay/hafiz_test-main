@@ -1,25 +1,58 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-class StorageServices {
-  Future<bool> checkAutoPlay() async {
-    SharedPreferences settings = await SharedPreferences.getInstance();
+@HiveType(typeId: 0)
+class Setting {
+  @HiveField(0)
+  bool settingValue;
 
-    return settings.getBool('autoplay') ?? true;
+  Setting({required this.settingValue});
+}
+
+class SettingAdapter extends TypeAdapter<Setting> {
+  @override
+  int get typeId => 0;
+
+  @override
+  Setting read(BinaryReader reader) {
+    return Setting(
+      settingValue: reader.read(),
+    );
   }
 
-  Future<bool> setAutoPlay(bool autoPlay) async {
-    SharedPreferences settings = await SharedPreferences.getInstance();
-    return settings.setBool('autoplay', autoPlay);
+  @override
+  void write(BinaryWriter writer, Setting obj) {
+    writer.write(obj.settingValue);
+  }
+}
+
+class StorageServices {
+  Box<Setting>? settingsBox;
+
+  StorageServices() {
+    settingsBox = Hive.box<Setting>('settings');
+  }
+
+  Future<bool> checkAutoPlay() async {
+    if (settingsBox == null || settingsBox!.get("autoplay") == null) {
+      return true;
+    }
+    return settingsBox!.get("autoplay")!.settingValue;
+  }
+
+  Future<void> setAutoPlay(bool autoPlay) async {
+    Hive.box<Setting>('settings')
+        .put("autoplay", Setting(settingValue: autoPlay));
   }
 
   Future<bool> checkPageTop() async {
-    SharedPreferences settings = await SharedPreferences.getInstance();
-
-    return settings.getBool('pagetop') ?? true;
+    if (settingsBox == null || settingsBox!.get("pagetop") == null) {
+      return true;
+    }
+    return settingsBox!.get("pagetop")!.settingValue;
   }
 
-  Future<bool> setPageTop(bool pageTop) async {
-    SharedPreferences settings = await SharedPreferences.getInstance();
-    return settings.setBool('pagetop', pageTop);
+  Future<void> setPageTop(bool pageTop) async {
+    Hive.box<Setting>('settings')
+        .put("pagetop", Setting(settingValue: pageTop));
   }
 }

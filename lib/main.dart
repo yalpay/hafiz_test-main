@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:hafiz_test/services/storage.services.dart';
 import 'package:hafiz_test/splash_screen.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void main() {
+  openHiveBox();
   runApp(
     const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Afeez(),
     ),
   );
+}
+
+void openHiveBox() async {
+  Hive.registerAdapter(SettingAdapter());
+  await Hive.initFlutter();
+  await Hive.openBox<Setting>('settings');
 }
 
 class Afeez extends StatefulWidget {

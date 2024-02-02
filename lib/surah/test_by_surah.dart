@@ -3,7 +3,7 @@ import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/ayah.services.dart';
 import 'package:hafiz_test/services/surah.services.dart';
-import 'package:hafiz_test/test_screen.dart';
+import 'package:hafiz_test/surah/test_screen.dart';
 
 class TestBySurah extends StatefulWidget {
   final int surahNumber;

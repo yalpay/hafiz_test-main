@@ -16,6 +16,7 @@ class _SettingDialogState extends State<SettingDialog> {
 
   Future<void> init() async {
     autoPlay = await storageServices.checkAutoPlay();
+    pageTop = await storageServices.checkPageTop();
 
     isLoading = false;
     setState(() {});

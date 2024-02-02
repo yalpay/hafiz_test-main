@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
 import 'package:hafiz_test/juz/juz_list_screen.dart';
-import 'package:hafiz_test/page/test_by_page.dart';
 import 'package:hafiz_test/settings_dialog.dart';
 import 'package:hafiz_test/surah/surah_list_screen.dart';
 import 'package:hafiz_test/surah/test_by_surah.dart';

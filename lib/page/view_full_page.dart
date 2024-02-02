@@ -1,12 +1,12 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:intl/intl.dart' hide TextDirection;
+import 'package:hafiz_test/services/ayah.services.dart';
 
 class PageScreen extends StatefulWidget {
-  final List<Ayah> page;
+  final Ayah ayah;
 
-  const PageScreen({Key? key, required this.page}) : super(key: key);
+  const PageScreen({Key? key, required this.ayah}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _Surah();
@@ -14,43 +14,21 @@ class PageScreen extends StatefulWidget {
 
 class _Surah extends State<PageScreen> {
   bool isLoading = false;
-  bool isPlaying = false;
-
+  final ayahServices = AyahServices();
   List<Ayah> page = [];
-
-  void getSurah() {
-    setState(() => isLoading = true);
-
-    page = widget.page;
-
-    setState(() => isLoading = false);
-  }
-
-  final audioPlayer = AudioPlayer();
-
-  Future<void> playAudio(String url) async {
-    try {
-      await audioPlayer.play(UrlSource(url));
-
-      setState(() => isPlaying = true);
-    } catch (e) {
-      setState(() => isPlaying = false);
-    }
-  }
-
-  int selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    init();
+  }
 
-    getSurah();
+  Future<void> init() async {
+    setState(() => isLoading = true);
 
-    audioPlayer.onPlayerComplete.listen((_) async {
-      setState(() {
-        isPlaying = false;
-      });
-    });
+    page = await ayahServices.getPage(widget.ayah.page);
+
+    setState(() => isLoading = false);
   }
 
   String makeAyahNumber(int ayahNumber) {
@@ -66,18 +44,11 @@ class _Surah extends State<PageScreen> {
   }
 
   @override
-  void dispose() {
-    audioPlayer.dispose();
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          getPageHeader(page.first),
+          getPageHeader(widget.ayah),
         ),
         backgroundColor: Colors.blueGrey,
       ),
@@ -109,21 +80,6 @@ class _Surah extends State<PageScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                // if (index == selectedIndex)
-                                //   if (isPlaying)
-                                //     const Icon(
-                                //       Icons.volume_up,
-                                //       color: Colors.blueGrey,
-                                //     ).animate(
-                                //       onPlay: (controller) {
-                                //         controller.repeat(reverse: true);
-                                //       },
-                                //     ).scaleXY()
-                                //   else
-                                //     const Icon(
-                                //       Icons.volume_up,
-                                //       color: Colors.blueGrey,
-                                //     ),
                                 Expanded(
                                   child: Text.rich(
                                     textDirection: TextDirection.rtl,
@@ -154,11 +110,6 @@ class _Surah extends State<PageScreen> {
                               ],
                             ),
                           ),
-                          onLongPress: () async {
-                            setState(() => selectedIndex = index);
-                            await audioPlayer.pause();
-                            await playAudio(ayah.audio);
-                          },
                         );
                       },
                       separatorBuilder: (context, index) {

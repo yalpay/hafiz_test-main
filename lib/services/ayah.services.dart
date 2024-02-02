@@ -54,9 +54,12 @@ class AyahServices {
     return Ayah();
   }
 
-  Future<List<Ayah>> getRandomPage() async {
-    final random = Random();
-    final page = random.nextInt(600);
+  Future<List<Ayah>> getPage(int? page) async {
+    if (page == null) {
+      final random = Random();
+      page = random.nextInt(600);
+    }
+
     final res = await _networkServices.get('page/$page/quran-uthmani');
     final body = json.decode(res.body);
 

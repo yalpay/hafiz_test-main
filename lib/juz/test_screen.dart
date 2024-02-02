@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
+import 'package:hafiz_test/page/view_full_page.dart';
 import 'package:hafiz_test/services/storage.services.dart';
-import 'package:hafiz_test/surah/view_full_surah.dart';
 import 'package:hafiz_test/util/util.dart';
 import 'package:hafiz_test/widget/button.dart';
 import 'package:hafiz_test/data/surah_list.dart';
@@ -240,7 +240,7 @@ class _TestPage extends State<JuzTestScreen> {
             CustomButton(
               width: 300,
               text: const Text(
-                'Tam Sureyi Görüntüle',
+                'Sayfayı Görüntüle',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -257,7 +257,7 @@ class _TestPage extends State<JuzTestScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (_) {
-                      return SurahScreen(surah: surah);
+                      return PageScreen(ayah: ayah);
                     },
                   ),
                 );
