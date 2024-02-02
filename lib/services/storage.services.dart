@@ -8,6 +8,14 @@ class Setting {
   Setting({required this.settingValue});
 }
 
+@HiveType(typeId: 1)
+class Favourite {
+  @HiveField(0)
+  List<int> favorites;
+
+  Favourite({required this.favorites});
+}
+
 class SettingAdapter extends TypeAdapter<Setting> {
   @override
   int get typeId => 0;
@@ -22,6 +30,23 @@ class SettingAdapter extends TypeAdapter<Setting> {
   @override
   void write(BinaryWriter writer, Setting obj) {
     writer.write(obj.settingValue);
+  }
+}
+
+class FavouriteAdapter extends TypeAdapter<Favourite> {
+  @override
+  int get typeId => 1;
+
+  @override
+  Favourite read(BinaryReader reader) {
+    return Favourite(
+      favorites: reader.readList().cast<int>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Favourite obj) {
+    writer.writeList(obj.favorites);
   }
 }
 
@@ -54,5 +79,37 @@ class StorageServices {
   Future<void> setPageTop(bool pageTop) async {
     Hive.box<Setting>('settings')
         .put("pagetop", Setting(settingValue: pageTop));
+  }
+}
+
+class FavouriteServices {
+  Box<Favourite>? favoriteBox;
+
+  FavouriteServices() {
+    favoriteBox = Hive.box<Favourite>('favorites');
+  }
+
+  Future<List<int>> getFavoritePages() async {
+    if (favoriteBox == null || favoriteBox!.get("pages") == null) {
+      return [];
+    }
+    return favoriteBox!.get("pages")!.favorites;
+  }
+
+  Future<void> setFavoritePages(List<int> favorites) async {
+    Hive.box<Favourite>('favorites')
+        .put("pages", Favourite(favorites: favorites));
+  }
+
+  Future<List<int>> getFavoriteJuzs() async {
+    if (favoriteBox == null || favoriteBox!.get("juzs") == null) {
+      return [];
+    }
+    return favoriteBox!.get("juzs")!.favorites;
+  }
+
+  Future<void> setFavoriteJuzs(List<int> favorites) async {
+    Hive.box<Favourite>('favorites')
+        .put("juzs", Favourite(favorites: favorites));
   }
 }

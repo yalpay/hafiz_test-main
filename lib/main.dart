@@ -17,6 +17,7 @@ void openHiveBox() async {
   Hive.registerAdapter(SettingAdapter());
   await Hive.initFlutter();
   await Hive.openBox<Setting>('settings');
+  await Hive.openBox<Favourite>('favorites');
 }
 
 class Afeez extends StatefulWidget {

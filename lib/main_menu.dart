@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
+import 'package:hafiz_test/favourites/favorites_page.dart';
 
 import 'package:hafiz_test/juz/juz_list_screen.dart';
 import 'package:hafiz_test/settings_dialog.dart';
@@ -39,6 +40,27 @@ class _MainMenu extends State<MainMenu> {
         );
       },
       child: Scaffold(
+        floatingActionButton: ElevatedButton(
+          onPressed: () async {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const FavoriteScreen(),
+              ),
+            );
+          },
+          child: const SizedBox(
+            width: 138,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.star),
+                SizedBox(width: 8),
+                Text('Favoriler'),
+              ],
+            ),
+          ),
+        ),
         appBar: AppBar(
           title: const Text(
             'HAFIZ',

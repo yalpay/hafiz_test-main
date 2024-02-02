@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
+import 'package:hafiz_test/services/storage.services.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:hafiz_test/services/ayah.services.dart';
 
@@ -14,6 +15,8 @@ class PageScreen extends StatefulWidget {
 
 class _Surah extends State<PageScreen> {
   bool isLoading = false;
+  bool isFavorite = false;
+  final favoriteServices = FavouriteServices();
   final ayahServices = AyahServices();
   List<Ayah> page = [];
 
@@ -47,6 +50,24 @@ class _Surah extends State<PageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(
+              isFavorite ? Icons.star : Icons.add,
+              color: isFavorite ? Colors.yellow : null,
+            ),
+            onPressed: () {
+              if (isFavorite) {
+                //favoriteServices.removePageFromFavorite(widget.ayah.page);
+              } else {
+                //favoriteServices.markPageFavoritePage(widget.ayah.page);
+              }
+              setState(() {
+                isFavorite = !isFavorite;
+              });
+            },
+          ),
+        ],
         title: Text(
           getPageHeader(widget.ayah),
         ),
