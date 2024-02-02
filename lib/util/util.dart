@@ -4,7 +4,7 @@ void showSnackBar(BuildContext context, String text) {
   final snackBar = SnackBar(
     content: Text(text),
     action: SnackBarAction(
-      label: 'Toh',
+      label: 'Kapat',
       onPressed: () {},
     ),
   );

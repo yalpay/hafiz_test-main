@@ -68,31 +68,6 @@ class _MainMenu extends State<MainMenu> {
             children: [
               CustomButton(
                 text: const Text(
-                  'Sayfa Başından Sor',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                icon: const Icon(
-                  FlutterIslamicIcons.quran,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) {
-                        return const TestByPage();
-                      },
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 20),
-              CustomButton(
-                text: const Text(
                   'Sureden Sor',
                   style: TextStyle(
                     color: Colors.white,
