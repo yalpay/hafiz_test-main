@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
-import 'package:hafiz_test/services/storage.services.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:hafiz_test/services/ayah.services.dart';
+import 'package:hafiz_test/services/storage.services.dart';
 
 class PageScreen extends StatefulWidget {
   final Ayah ayah;
@@ -16,7 +16,6 @@ class PageScreen extends StatefulWidget {
 class _Surah extends State<PageScreen> {
   bool isLoading = false;
   bool isFavorite = false;
-  final favoriteServices = FavouriteServices();
   final ayahServices = AyahServices();
   List<Ayah> page = [];
 
@@ -56,11 +55,15 @@ class _Surah extends State<PageScreen> {
               isFavorite ? Icons.star : Icons.add,
               color: isFavorite ? Colors.yellow : null,
             ),
-            onPressed: () {
+            onPressed: () async {
+              final storageServices = FavouriteServices();
+              final pageList = await storageServices.getFavoritePages();
               if (isFavorite) {
-                //favoriteServices.removePageFromFavorite(widget.ayah.page);
+                pageList.remove(widget.ayah.page);
+                storageServices.setFavoritePages(pageList);
               } else {
-                //favoriteServices.markPageFavoritePage(widget.ayah.page);
+                pageList.add(widget.ayah.page);
+                storageServices.setFavoritePages(pageList);
               }
               setState(() {
                 isFavorite = !isFavorite;

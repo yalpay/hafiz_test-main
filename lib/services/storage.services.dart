@@ -65,8 +65,7 @@ class StorageServices {
   }
 
   Future<void> setAutoPlay(bool autoPlay) async {
-    Hive.box<Setting>('settings')
-        .put("autoplay", Setting(settingValue: autoPlay));
+    settingsBox!.put("autoplay", Setting(settingValue: autoPlay));
   }
 
   Future<bool> checkPageTop() async {
@@ -77,8 +76,7 @@ class StorageServices {
   }
 
   Future<void> setPageTop(bool pageTop) async {
-    Hive.box<Setting>('settings')
-        .put("pagetop", Setting(settingValue: pageTop));
+    settingsBox!.put("pagetop", Setting(settingValue: pageTop));
   }
 }
 
@@ -97,8 +95,13 @@ class FavouriteServices {
   }
 
   Future<void> setFavoritePages(List<int> favorites) async {
-    Hive.box<Favourite>('favorites')
-        .put("pages", Favourite(favorites: favorites));
+    favoriteBox!.put("pages", Favourite(favorites: favorites));
+  }
+
+  Future<void> deleteFavoritePage(int page) async {
+    final favPages = await getFavoritePages();
+    favPages.remove(page);
+    setFavoritePages(favPages);
   }
 
   Future<List<int>> getFavoriteJuzs() async {
@@ -109,7 +112,12 @@ class FavouriteServices {
   }
 
   Future<void> setFavoriteJuzs(List<int> favorites) async {
-    Hive.box<Favourite>('favorites')
-        .put("juzs", Favourite(favorites: favorites));
+    favoriteBox!.put("juzs", Favourite(favorites: favorites));
+  }
+
+  Future<void> deleteFavoriteJuz(int juz) async {
+    final favJuzs = await getFavoriteJuzs();
+    favJuzs.remove(juz);
+    setFavoritePages(favJuzs);
   }
 }

@@ -50,7 +50,9 @@ class _TestPage extends State<TestScreen> {
 
   Future<void> playAudio(String url) async {
     try {
-      await audioPlayer.play(UrlSource(url));
+      if (mounted) {
+        await audioPlayer.play(UrlSource(url));
+      }
     } catch (e) {
       setState(() => isPlaying = false);
     }

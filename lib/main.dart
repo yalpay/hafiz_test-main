@@ -15,6 +15,7 @@ void main() {
 
 void openHiveBox() async {
   Hive.registerAdapter(SettingAdapter());
+  Hive.registerAdapter(FavouriteAdapter());
   await Hive.initFlutter();
   await Hive.openBox<Setting>('settings');
   await Hive.openBox<Favourite>('favorites');
