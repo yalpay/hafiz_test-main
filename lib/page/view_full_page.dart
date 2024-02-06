@@ -52,8 +52,8 @@ class _Surah extends State<PageScreen> {
         actions: [
           IconButton(
             icon: Icon(
-              isFavorite ? Icons.star : Icons.add,
-              color: isFavorite ? Colors.yellow : null,
+              Icons.star,
+              color: isFavorite ? Colors.yellow : Colors.white,
             ),
             onPressed: () async {
               final storageServices = FavouriteServices();

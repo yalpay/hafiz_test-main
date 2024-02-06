@@ -118,6 +118,6 @@ class FavouriteServices {
   Future<void> deleteFavoriteJuz(int juz) async {
     final favJuzs = await getFavoriteJuzs();
     favJuzs.remove(juz);
-    setFavoritePages(favJuzs);
+    setFavoriteJuzs(favJuzs);
   }
 }
