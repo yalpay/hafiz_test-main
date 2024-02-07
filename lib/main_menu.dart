@@ -40,7 +40,7 @@ class _MainMenu extends State<MainMenu> {
         );
       },
       child: Scaffold(
-        floatingActionButton: ElevatedButton(
+        floatingActionButton: CustomButton(
           onPressed: () async {
             Navigator.push(
               context,
@@ -49,21 +49,24 @@ class _MainMenu extends State<MainMenu> {
               ),
             );
           },
-          child: const SizedBox(
-            width: 138,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.star),
-                SizedBox(width: 8),
-                Text('Favoriler'),
-              ],
+          icon: const Icon(
+            Icons.star,
+            color: Colors.white,
+          ),
+          text: const Text(
+            'Favoriler',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
             ),
           ),
+          width: 150,
         ),
         appBar: AppBar(
+          centerTitle: true,
           title: const Text(
-            'HAFIZ',
+            'EZBERİNİ TEST ET',
             style: TextStyle(fontSize: 20),
           ),
           backgroundColor: Colors.blueGrey,

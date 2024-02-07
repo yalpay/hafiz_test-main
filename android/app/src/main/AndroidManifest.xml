@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.hafiz_test">
    <application
-        android:label="Hafiz Al-Quran Test"
+        android:label="Hafız Ezber Test"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

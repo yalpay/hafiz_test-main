@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/main_menu.dart';
 import 'package:shimmer/shimmer.dart';
@@ -12,8 +14,20 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreen extends State<SplashScreen> {
+  final welcomingMessages = [
+    "Gökyüzünü yıldızlar, yeryüzünü hafızlar süsler",
+    "İlim öyle bir şehirdir ki geceni gündüze katmadan fetholunmaz",
+    "Hafızlık meşakkatli seferin hakikatli zaferine talip olmaktır",
+    "Yürü hafızım! Geceler senin hafızlık aşkına şahittir",
+    "Sen aşkı sabah namazından önce ders veren hafızlara sor",
+    "Sabır hafızım sabır, Kur'an en güzel yoldaştır",
+    "Ümmetimin en şereflileri, Kur'an'ı ezberleyenlerdir (s.a.v)",
+    "Kur'an'ı ezberleyen kimse, kıyamette cennet ehlinin reisleridir (s.a.v)"
+  ];
+  final random = Random();
+
   Future<bool> _splash() async {
-    await Future.delayed(const Duration(milliseconds: 1500), () {});
+    await Future.delayed(const Duration(milliseconds: 3500), () {});
     return true;
   }
 
@@ -51,9 +65,9 @@ class _SplashScreen extends State<SplashScreen> {
             highlightColor: Colors.greenAccent,
             child: Container(
               margin: const EdgeInsets.only(top: 220),
-              child: const Column(
+              child: Column(
                 children: [
-                  Text(
+                  const Text(
                     'HAFIZ',
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -62,9 +76,9 @@ class _SplashScreen extends State<SplashScreen> {
                     ),
                   ),
                   Text(
-                    'Ezberini test et',
+                    welcomingMessages[random.nextInt(welcomingMessages.length)],
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 20.0,
                       fontStyle: FontStyle.italic,
                       fontFamily: 'pacifico',
