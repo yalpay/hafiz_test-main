@@ -54,25 +54,30 @@ class _TestPage extends State<TestBySurah> {
         title: const Text('Sure Listesi'),
         backgroundColor: Colors.blueGrey,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (isLoading)
-            const Center(
-              child: CircularProgressIndicator.adaptive(
-                strokeWidth: 5,
-                backgroundColor: Colors.blueGrey,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-            )
-          else
-            TestScreen(
-              surah: surah,
-              ayah: ayah,
-              ayahs: ayahs,
-              onRefresh: () async => await init(),
-            ),
-        ],
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (isLoading)
+                const Center(
+                  child: CircularProgressIndicator.adaptive(
+                    strokeWidth: 5,
+                    backgroundColor: Colors.blueGrey,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+              else
+                TestScreen(
+                  surah: surah,
+                  ayah: ayah,
+                  ayahs: ayahs,
+                  onRefresh: () async => await init(),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

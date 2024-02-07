@@ -31,7 +31,7 @@ class _TestPage extends State<TestScreen> {
   final audioPlayer = AudioPlayer();
   final storageServices = StorageServices();
 
-  final maxAyahLength = 300;
+  final maxAyahLength = 350;
   Surah surah = Surah();
   List<Ayah> ayahs = [];
   Ayah ayah = Ayah();
@@ -117,179 +117,173 @@ class _TestPage extends State<TestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            if (ayah.numberInSurah < ayahs.length)
-              const Text(
-                'Bir Sonraki Ayete Geç!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.blueGrey,
-                  fontSize: 20,
-                ),
-              ).animate(
-                onPlay: (controller) {
-                  controller.repeat(reverse: true);
-                },
-              ).scaleXY(end: 1.5, delay: 1000.ms),
-            const SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Text(
-                ayah.text.length > maxAyahLength
-                    ? ayah.text.substring(0, maxAyahLength)
-                    : ayah.text,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 25,
-                  color: Colors.blueGrey,
-                ),
-              ),
+    return Column(
+      children: [
+        const SizedBox(height: 20),
+        if (ayah.numberInSurah < ayahs.length)
+          const Text(
+            'Bir Sonraki Ayete Geç!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.blueGrey,
+              fontSize: 20,
             ),
-            const SizedBox(height: 20),
-            Text.rich(
+          ).animate(
+            onPlay: (controller) {
+              controller.repeat(reverse: true);
+            },
+          ).scaleXY(end: 1.5, delay: 1000.ms),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Text(
+            ayah.text.length > maxAyahLength
+                ? ayah.text.substring(0, maxAyahLength)
+                : ayah.text,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 25,
+              color: Colors.blueGrey,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text.rich(
+          TextSpan(
+            children: [
               TextSpan(
-                children: [
-                  TextSpan(
-                    text: surahs[surah.number - 1],
-                    style: const TextStyle(
-                      color: Colors.blueGrey,
-                    ),
-                  ),
-                  TextSpan(
-                    text: ' - ${ayah.numberInSurah}.Ayet',
-                    style: const TextStyle(
-                      color: Colors.blueGrey,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              '(${surah.name})',
-              style: const TextStyle(
-                color: Colors.blueGrey,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            const SizedBox(height: 20),
-            InkWell(
-              child: Icon(
-                isPlaying
-                    ? Icons.pause_circle_outline
-                    : Icons.play_circle_outline,
-                size: 80.0,
-                color: Colors.blueGrey,
-              ),
-              onTap: () {
-                isPlaying ? audioPlayer.pause() : playAudio(ayah.audio);
-
-                isPlaying = !isPlaying;
-
-                setState(() {});
-              },
-            ),
-            const SizedBox(height: 50),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: CustomButton(
-                    text: const Text(
-                      'Önceki Ayet',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    icon: const Icon(
-                      Icons.skip_previous,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                    onPressed: () => playPreviousAyah(),
-                  ),
+                text: surahs[surah.number - 1],
+                style: const TextStyle(
+                  color: Colors.blueGrey,
                 ),
-                const SizedBox(width: 20),
-                Expanded(
-                  child: CustomButton(
-                    iconPosition: IconPosition.right,
-                    text: const Text(
-                      'Sonraki Ayet',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    icon: const Icon(
-                      Icons.skip_next,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                    onPressed: () => playNextAyah(),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 30),
-            CustomButton(
-              width: 300,
-              text: const Text(
-                'Sayfayı Görüntüle',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
+              ),
+              TextSpan(
+                text: ' - ${ayah.numberInSurah}.Ayet',
+                style: const TextStyle(
+                  color: Colors.blueGrey,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              icon: const Icon(
-                Icons.remove_red_eye,
-                color: Colors.white,
-                size: 30,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) {
-                      return PageScreen(ayah: ayah);
-                    },
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          '(${surah.name})',
+          style: const TextStyle(
+            color: Colors.blueGrey,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+        const SizedBox(height: 20),
+        InkWell(
+          child: Icon(
+            isPlaying ? Icons.pause_circle_outline : Icons.play_circle_outline,
+            size: 80.0,
+            color: Colors.blueGrey,
+          ),
+          onTap: () {
+            isPlaying ? audioPlayer.pause() : playAudio(ayah.audio);
+
+            isPlaying = !isPlaying;
+
+            setState(() {});
+          },
+        ),
+        const SizedBox(height: 15),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              child: CustomButton(
+                text: const Text(
+                  'Önceki Ayet',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            CustomButton(
-              width: 300,
-              text: const Text(
-                'Yeniden Sor',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
                 ),
+                icon: const Icon(
+                  Icons.skip_previous,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: () => playPreviousAyah(),
               ),
-              icon: const Icon(
-                Icons.refresh,
-                color: Colors.white,
-                size: 30,
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: CustomButton(
+                iconPosition: IconPosition.right,
+                text: const Text(
+                  'Sonraki Ayet',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                icon: const Icon(
+                  Icons.skip_next,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: () => playNextAyah(),
               ),
-              onPressed: () async {
-                await widget.onRefresh?.call();
-                init();
-              },
             ),
           ],
         ),
-      ),
+        const SizedBox(height: 20),
+        CustomButton(
+          width: 300,
+          text: const Text(
+            'Sayfayı Görüntüle',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          icon: const Icon(
+            Icons.remove_red_eye,
+            color: Colors.white,
+            size: 30,
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) {
+                  return PageScreen(ayah: ayah);
+                },
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 20),
+        CustomButton(
+          width: 300,
+          text: const Text(
+            'Yeniden Sor',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          icon: const Icon(
+            Icons.refresh,
+            color: Colors.white,
+            size: 30,
+          ),
+          onPressed: () async {
+            await widget.onRefresh?.call();
+            init();
+          },
+        ),
+      ],
     );
   }
 }
