@@ -31,6 +31,7 @@ class _TestPage extends State<TestScreen> {
   final audioPlayer = AudioPlayer();
   final storageServices = StorageServices();
 
+  final maxAyahLength = 300;
   Surah surah = Surah();
   List<Ayah> ayahs = [];
   Ayah ayah = Ayah();
@@ -138,8 +139,8 @@ class _TestPage extends State<TestScreen> {
             Padding(
               padding: const EdgeInsets.all(10),
               child: Text(
-                ayah.text.length > 400
-                    ? ayah.text.substring(0, 400)
+                ayah.text.length > maxAyahLength
+                    ? ayah.text.substring(0, maxAyahLength)
                     : ayah.text,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
