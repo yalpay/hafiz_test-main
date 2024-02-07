@@ -6,7 +6,7 @@ import 'package:hafiz_test/juz/juz_list_screen.dart';
 import 'package:hafiz_test/juz/test_by_juz.dart';
 import 'package:hafiz_test/settings_dialog.dart';
 import 'package:hafiz_test/surah/surah_list_screen.dart';
-import 'package:hafiz_test/widget/button.dart';
+import 'package:hafiz_test/widgets/button.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});

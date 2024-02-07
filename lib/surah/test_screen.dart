@@ -5,8 +5,8 @@ import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/page/view_full_page.dart';
 import 'package:hafiz_test/services/storage.services.dart';
-import 'package:hafiz_test/util/util.dart';
-import 'package:hafiz_test/widget/button.dart';
+import 'package:hafiz_test/widgets/snack_bar.dart';
+import 'package:hafiz_test/widgets/button.dart';
 import 'package:hafiz_test/data/surah_list.dart';
 
 class TestScreen extends StatefulWidget {
@@ -51,7 +51,9 @@ class _TestPage extends State<TestScreen> {
   Future<void> playAudio(String url) async {
     try {
       if (mounted) {
+        final speed = storageServices.getPlaybackSpeed();
         await audioPlayer.play(UrlSource(url));
+        audioPlayer.setPlaybackRate(speed as double);
       }
     } catch (e) {
       setState(() => isPlaying = false);

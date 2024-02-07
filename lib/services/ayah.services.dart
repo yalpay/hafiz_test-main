@@ -32,7 +32,7 @@ class AyahServices {
   }
 
   Future<Ayah> getRandomAyahFromJuz(int juzNumber) async {
-    final pagetop = await storageServices.checkPageTop();
+    bool pagetop = await storageServices.checkPageTop();
     if (pagetop) {
       final random = Random();
       final page = (juzNumber - 1) * 20 + random.nextInt(20);
@@ -90,7 +90,7 @@ class AyahServices {
   Future<Ayah> getRandomAyahForSurah(List<Ayah> ayahs) async {
     try {
       final random = Random();
-      final pagetopEnabled = await storageServices.checkPageTop();
+      bool pagetopEnabled = await storageServices.checkPageTop();
       final favPages = await favoriteServices.getFavoritePages();
 
       if (pagetopEnabled) {

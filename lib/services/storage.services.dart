@@ -3,7 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 @HiveType(typeId: 0)
 class Setting {
   @HiveField(0)
-  bool settingValue;
+  String settingValue;
 
   Setting({required this.settingValue});
 }
@@ -54,28 +54,39 @@ class StorageServices {
   Box<Setting>? settingsBox;
 
   StorageServices() {
-    settingsBox = Hive.box<Setting>('settings');
+    settingsBox = Hive.box<Setting>('setting');
   }
 
   Future<bool> checkAutoPlay() async {
     if (settingsBox == null || settingsBox!.get("autoplay") == null) {
       return true;
     }
-    return settingsBox!.get("autoplay")!.settingValue;
+    return settingsBox!.get("autoplay")!.settingValue == "true";
   }
 
-  Future<void> setAutoPlay(bool autoPlay) async {
+  Future<void> setAutoPlay(String autoPlay) async {
     settingsBox!.put("autoplay", Setting(settingValue: autoPlay));
+  }
+
+  Future<String> getPlaybackSpeed() async {
+    if (settingsBox == null || settingsBox!.get("speed") == null) {
+      return "1";
+    }
+    return settingsBox!.get("speed")!.settingValue;
+  }
+
+  Future<void> setPlaybackSpeed(String speed) async {
+    settingsBox!.put("speed", Setting(settingValue: speed));
   }
 
   Future<bool> checkPageTop() async {
     if (settingsBox == null || settingsBox!.get("pagetop") == null) {
       return true;
     }
-    return settingsBox!.get("pagetop")!.settingValue;
+    return settingsBox!.get("pagetop")!.settingValue == "true";
   }
 
-  Future<void> setPageTop(bool pageTop) async {
+  Future<void> setPageTop(String pageTop) async {
     settingsBox!.put("pagetop", Setting(settingValue: pageTop));
   }
 }
