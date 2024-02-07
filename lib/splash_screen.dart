@@ -27,7 +27,7 @@ class _SplashScreen extends State<SplashScreen> {
   final random = Random();
 
   Future<bool> _splash() async {
-    await Future.delayed(const Duration(milliseconds: 3500), () {});
+    await Future.delayed(const Duration(milliseconds: 4500), () {});
     return true;
   }
 
@@ -64,7 +64,7 @@ class _SplashScreen extends State<SplashScreen> {
             baseColor: Colors.blueGrey,
             highlightColor: Colors.greenAccent,
             child: Container(
-              margin: const EdgeInsets.only(top: 220),
+              margin: const EdgeInsets.only(top: 120),
               child: Column(
                 children: [
                   const Text(
@@ -79,9 +79,9 @@ class _SplashScreen extends State<SplashScreen> {
                     welcomingMessages[random.nextInt(welcomingMessages.length)],
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: 20.0,
+                      fontSize: 22.0,
                       fontStyle: FontStyle.italic,
-                      fontFamily: 'pacifico',
+                      fontFamily: 'Times New Roman',
                       fontWeight: FontWeight.bold,
                     ),
                   ),
