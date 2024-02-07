@@ -25,7 +25,6 @@ class _TestPage extends State<TestBySurah> {
   late Ayah ayah;
 
   int surahNumber = 1;
-  bool get isRandomSurah => widget.surahNumber == 0;
 
   @override
   void initState() {
@@ -41,15 +40,7 @@ class _TestPage extends State<TestBySurah> {
     setState(() => isLoading = true);
 
     surahNumber = widget.surahNumber;
-
-    if (isRandomSurah) {
-      surahNumber = surahServices.getRandomSurahNumber();
-    }
-
-    if (isRandomSurah || ayahs.isEmpty) {
-      surah = await surahServices.getSurah(surahNumber);
-    }
-
+    surah = await surahServices.getSurah(surahNumber);
     ayahs = surah.ayahs;
     ayah = await ayahServices.getRandomAyahForSurah(ayahs);
 

@@ -9,6 +9,9 @@ import 'package:hafiz_test/services/storage.services.dart';
 class AyahServices {
   final _networkServices = NetworkServices();
   final storageServices = StorageServices();
+  final favoriteServices = FavouriteServices();
+  final allPages = List.generate(600, (index) => index + 1);
+  final allJuzs = List.generate(30, (index) => index + 1);
 
   Future<List<Ayah>> getSurahAyahs(int surahNumber) async {
     try {
@@ -54,10 +57,23 @@ class AyahServices {
     return Ayah();
   }
 
+  Future<int> getRandomJuz() async {
+    final favJuzs = await favoriteServices.getFavoriteJuzs();
+    List<int> nonFavoriteJuzs =
+        allJuzs.where((e) => !favJuzs.contains(e)).toList();
+    final random = Random();
+    final index = random.nextInt(nonFavoriteJuzs.length);
+    return nonFavoriteJuzs[index];
+  }
+
   Future<List<Ayah>> getPage(int? page) async {
     if (page == null) {
+      final favPages = await favoriteServices.getFavoritePages();
+      List<int> nonFavoritePages =
+          allPages.where((e) => !favPages.contains(e)).toList();
       final random = Random();
-      page = random.nextInt(600);
+      final index = random.nextInt(nonFavoritePages.length);
+      page = nonFavoritePages[index];
     }
 
     final res = await _networkServices.get('page/$page/quran-uthmani');
@@ -74,11 +90,14 @@ class AyahServices {
   Future<Ayah> getRandomAyahForSurah(List<Ayah> ayahs) async {
     try {
       final random = Random();
-      final pagetop = await storageServices.checkPageTop();
-      if (pagetop == true) {
+      final pagetopEnabled = await storageServices.checkPageTop();
+      final favPages = await favoriteServices.getFavoritePages();
+
+      if (pagetopEnabled) {
         List<int> topPageAyahs = [];
         for (int i = 1; i < ayahs.length; i++) {
-          if (ayahs[i].page > ayahs[i - 1].page) {
+          if (ayahs[i].page > ayahs[i - 1].page ||
+              favPages.contains(ayahs[i].page) == false) {
             topPageAyahs.add(i);
           }
         }
@@ -88,8 +107,17 @@ class AyahServices {
         final index = random.nextInt(topPageAyahs.length);
         return ayahs[topPageAyahs[index]];
       } else {
-        final range = random.nextInt(ayahs.length - 1);
-        return ayahs[range];
+        List<int> allAyahs = [];
+        for (int i = 1; i < ayahs.length; i++) {
+          if (favPages.contains(ayahs[i].page) == false) {
+            allAyahs.add(i);
+          }
+        }
+        if (allAyahs.isEmpty) {
+          return ayahs[0];
+        }
+        final index = random.nextInt(allAyahs.length - 1);
+        return ayahs[allAyahs[index]];
       }
     } catch (error) {
       if (kDebugMode) {

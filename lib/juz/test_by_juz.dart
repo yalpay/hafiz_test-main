@@ -20,19 +20,23 @@ class _TestPage extends State<TestByJuz> {
 
   List<Ayah> ayahs = [];
   late Ayah ayah;
-
+  int juzNumber = 0;
   bool autoplay = true;
   Surah surah = Surah();
 
   Future<void> init() async {
     setState(() => isLoading = true);
 
-    final ayahFromJuz =
-        await AyahServices().getRandomAyahFromJuz(widget.juzNumber);
+    Ayah ayahFromJuz;
+    final ayahServices = AyahServices();
+    juzNumber = widget.juzNumber;
 
+    if (juzNumber == 0) {
+      juzNumber = await ayahServices.getRandomJuz();
+    }
+    ayahFromJuz = await ayahServices.getRandomAyahFromJuz(juzNumber);
     surah = await SurahServices().getSurah(ayahFromJuz.surah!.number);
     ayahs = surah.ayahs;
-
     ayah = ayahs.firstWhere((ayah) => ayah.number == ayahFromJuz.number);
 
     setState(() => isLoading = false);

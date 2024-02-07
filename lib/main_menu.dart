@@ -3,9 +3,9 @@ import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:hafiz_test/favourites/favorites.dart';
 
 import 'package:hafiz_test/juz/juz_list_screen.dart';
+import 'package:hafiz_test/juz/test_by_juz.dart';
 import 'package:hafiz_test/settings_dialog.dart';
 import 'package:hafiz_test/surah/surah_list_screen.dart';
-import 'package:hafiz_test/surah/test_by_surah.dart';
 import 'package:hafiz_test/widget/button.dart';
 
 class MainMenu extends StatefulWidget {
@@ -155,7 +155,7 @@ class _MainMenu extends State<MainMenu> {
                     context,
                     MaterialPageRoute(
                       builder: (_) {
-                        return const TestBySurah(surahNumber: 0);
+                        return const TestByJuz(juzNumber: 0);
                       },
                     ),
                   );
