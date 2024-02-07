@@ -155,7 +155,10 @@ class _MainMenu extends State<MainMenu> {
                     context,
                     MaterialPageRoute(
                       builder: (_) {
-                        return const TestByJuz(juzNumber: 0);
+                        return const TestByJuz(
+                          juzNumber: 0,
+                          title: 'Ana Sayfa',
+                        );
                       },
                     ),
                   );

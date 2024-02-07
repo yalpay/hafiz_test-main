@@ -9,13 +9,13 @@ import 'package:hafiz_test/widgets/snack_bar.dart';
 import 'package:hafiz_test/widgets/button.dart';
 import 'package:hafiz_test/data/surah_list.dart';
 
-class JuzTestScreen extends StatefulWidget {
+class TestScreen extends StatefulWidget {
   final Surah surah;
   final Ayah ayah;
   final List<Ayah> ayahs;
   final Function()? onRefresh;
 
-  const JuzTestScreen({
+  const TestScreen({
     Key? key,
     required this.surah,
     required this.ayah,
@@ -27,7 +27,7 @@ class JuzTestScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _TestPage();
 }
 
-class _TestPage extends State<JuzTestScreen> {
+class _TestPage extends State<TestScreen> {
   final audioPlayer = AudioPlayer();
   final storageServices = StorageServices();
 

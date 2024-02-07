@@ -79,7 +79,10 @@ class JuzsPage extends State<JuzListScreen> {
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
-                        return TestByJuz(juzNumber: juzNumber);
+                        return TestByJuz(
+                          juzNumber: juzNumber,
+                          title: 'Cüz Listesi',
+                        );
                       },
                     ));
                   },

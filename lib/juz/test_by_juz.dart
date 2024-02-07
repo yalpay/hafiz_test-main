@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:hafiz_test/juz/test_screen.dart';
+import 'package:hafiz_test/page/test_screen.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/ayah.services.dart';
@@ -8,8 +8,10 @@ import 'package:hafiz_test/services/surah.services.dart';
 
 class TestByJuz extends StatefulWidget {
   final int juzNumber;
+  final String title;
 
-  const TestByJuz({Key? key, required this.juzNumber}) : super(key: key);
+  const TestByJuz({Key? key, required this.juzNumber, required this.title})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _TestPage();
@@ -53,7 +55,7 @@ class _TestPage extends State<TestByJuz> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cüz Listesi'),
+        title: Text(widget.title),
         backgroundColor: Colors.blueGrey,
       ),
       body: Column(
@@ -68,7 +70,7 @@ class _TestPage extends State<TestByJuz> {
               ),
             )
           else
-            JuzTestScreen(
+            TestScreen(
               surah: surah,
               ayah: ayah,
               ayahs: ayahs,
