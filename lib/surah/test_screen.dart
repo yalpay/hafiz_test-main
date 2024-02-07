@@ -51,9 +51,9 @@ class _TestPage extends State<TestScreen> {
   Future<void> playAudio(String url) async {
     try {
       if (mounted) {
-        final speed = storageServices.getPlaybackSpeed();
+        final speed = await storageServices.getPlaybackSpeed();
         await audioPlayer.play(UrlSource(url));
-        audioPlayer.setPlaybackRate(speed as double);
+        audioPlayer.setPlaybackRate(double.parse(speed));
       }
     } catch (e) {
       setState(() => isPlaying = false);
