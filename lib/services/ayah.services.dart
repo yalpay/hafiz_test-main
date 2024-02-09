@@ -61,6 +61,7 @@ class AyahServices {
     final favJuzs = await favoriteServices.getFavoriteJuzs();
     List<int> nonFavoriteJuzs =
         allJuzs.where((e) => !favJuzs.contains(e)).toList();
+    if (nonFavoriteJuzs.isEmpty) return 1;
     final random = Random();
     final index = random.nextInt(nonFavoriteJuzs.length);
     return nonFavoriteJuzs[index];
@@ -71,9 +72,13 @@ class AyahServices {
       final favPages = await favoriteServices.getFavoritePages();
       List<int> nonFavoritePages =
           allPages.where((e) => !favPages.contains(e)).toList();
-      final random = Random();
-      final index = random.nextInt(nonFavoritePages.length);
-      page = nonFavoritePages[index];
+      if (nonFavoritePages.isEmpty) {
+        page = 1;
+      } else {
+        final random = Random();
+        final index = random.nextInt(nonFavoritePages.length);
+        page = nonFavoritePages[index];
+      }
     }
 
     final res = await _networkServices.get('page/$page/quran-uthmani');
