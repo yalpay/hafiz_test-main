@@ -41,6 +41,9 @@ class _Surah extends State<PageScreen> {
   }
 
   String getPageHeader(Ayah ayah) {
+    if (ayah.page > 590) {
+      return "Sayfa ${ayah.page.toString()}";
+    }
     int donus = 21 - (ayah.page % 20);
     return "${ayah.juz.toString()}.Cüz ${(donus == 21 ? 1 : donus).toString()}.Dönüş";
   }
