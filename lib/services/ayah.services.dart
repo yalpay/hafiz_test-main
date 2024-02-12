@@ -5,6 +5,25 @@ import 'package:flutter/foundation.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/services/network.services.dart';
 import 'package:hafiz_test/services/storage.services.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart';
+import 'package:hafiz_test/model/aya_model.dart';
+
+Future<File> writeJsonToFile(String jsonData) async {
+  final directory = await getApplicationDocumentsDirectory();
+  final file = File('${directory.path}/assets/data/data.json');
+  return file.writeAsString(jsonData);
+}
+
+Future<AyaModel> getAyaBySurahNo(String surahNameArabic, String ayaNo) async {
+  final String response = await rootBundle.loadString('assets/quran.json');
+  List<AyaModel> quran = List<AyaModel>.from(
+      (json.decode(response)).map((element) => AyaModel.fromJson(element)));
+  var x = quran.firstWhere((element) =>
+      element.surahNameArabic == surahNameArabic && element.ayahNo == ayaNo);
+  return x;
+}
 
 class AyahServices {
   final _networkServices = NetworkServices();
@@ -20,7 +39,10 @@ class AyahServices {
       final body = json.decode(res.body);
 
       final ayahs = Ayah.fromJsonList(body['data']['ayahs']);
-
+      /*for (int i = 0; i < ayahs.length; i++) {
+        final newAyah = { };
+        var ayah = getAyaBySurahNo(ayahs[i].surah!.englishName, i.toString());
+      }*/
       return ayahs;
     } catch (error) {
       if (kDebugMode) {
