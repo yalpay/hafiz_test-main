@@ -39,10 +39,7 @@ class AyahServices {
       final body = json.decode(res.body);
 
       final ayahs = Ayah.fromJsonList(body['data']['ayahs']);
-      /*for (int i = 0; i < ayahs.length; i++) {
-        final newAyah = { };
-        var ayah = getAyaBySurahNo(ayahs[i].surah!.englishName, i.toString());
-      }*/
+
       return ayahs;
     } catch (error) {
       if (kDebugMode) {
