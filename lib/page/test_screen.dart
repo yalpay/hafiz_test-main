@@ -41,6 +41,7 @@ class _TestPage extends State<TestScreen> {
   Future<void> init() async {
     surah = widget.surah;
     ayah = widget.ayah;
+    ayahs = widget.surah.ayahs;
     audioUrl = "${auidoUrl + ayah.number.toString()}.mp3";
     autoplay = await storageServices.checkAutoPlay();
 
@@ -117,7 +118,7 @@ class _TestPage extends State<TestScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         if (ayah.numberInSurah < ayahs.length)
           const Text(
             'Bir Sonraki Ayete Geç!',
