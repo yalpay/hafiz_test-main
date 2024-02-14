@@ -1,65 +1,51 @@
-import 'package:hafiz_test/model/surah.model.dart';
-
 class Ayah {
   final int number;
-  final String audio;
-  final List<String> audioSecondary;
-  final String text;
+  final String surah;
   final int numberInSurah;
   final int juz;
-  final int manzil;
+  final String originalText;
   final int page;
-  final int ruku;
-  final int hizbQuarter;
-  final Surah? surah;
-  // final bool sajda;
+  final String arabicText;
+  final int arabicLetterCount;
+  final int arabicWordCount;
 
   Ayah({
     this.number = 0,
-    this.audio = '',
-    this.audioSecondary = const [],
-    this.text = '',
+    this.surah = '',
+    this.arabicText = '',
+    this.originalText = '',
     this.numberInSurah = 0,
     this.juz = 0,
-    this.manzil = 0,
+    this.arabicLetterCount = 0,
     this.page = 0,
-    this.ruku = 0,
-    this.hizbQuarter = 0,
-    this.surah,
-    // this.sajda = false,
+    this.arabicWordCount = 0,
   });
 
   factory Ayah.fromJson(Map<String, dynamic> json) {
     return Ayah(
-      number: json['number'],
-      audio: json['audio'] ?? '',
-      audioSecondary: ((json['audioSecondary'] ?? []) as List).cast<String>(),
-      text: json['text'],
-      numberInSurah: json['numberInSurah'],
-      juz: json['juz'],
-      manzil: json['manzil'],
-      page: json['page'],
-      ruku: json['ruku'],
-      hizbQuarter: json['hizbQuarter'],
-      surah: Surah.fromJson(json['surah'] ?? {}),
-      // sajda: json['sajda'],
+      number: int.parse(json['number']),
+      surah: json['surah'],
+      arabicText: json['arabicText'],
+      numberInSurah: int.parse(json['numberInSurah']),
+      juz: int.parse(json['juz']),
+      originalText: json['originalText'],
+      page: int.parse(json['page']),
+      arabicLetterCount: int.parse(json['arabicLetterCount']),
+      arabicWordCount: int.parse(json['arabicWordCount']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'number': number,
-      'audio': audio,
-      'audioSecondary': audioSecondary,
-      'text': text,
+      'arabicText': arabicText,
+      'originalText': originalText,
+      'arabicLetterCount': arabicLetterCount,
       'numberInSurah': numberInSurah,
       'juz': juz,
-      'manzil': manzil,
+      'arabicWordCount': arabicWordCount,
       'page': page,
-      'ruku': ruku,
-      'hizbQuarter': hizbQuarter,
       'surah': surah,
-      // 'sajda': sajda,
     };
   }
 

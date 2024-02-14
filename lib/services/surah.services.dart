@@ -1,26 +1,22 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:flutter/services.dart';
+import 'package:hafiz_test/model/ayah.model.dart';
 
 import 'package:hafiz_test/model/surah.model.dart';
-import 'package:hafiz_test/services/network.services.dart';
 
 class SurahServices {
-  final _networkServices = NetworkServices();
-
   int getRandomSurahNumber() {
-    final surahNumber = 1 + Random().nextInt(114 - 1);
+    final surahNumber = 1 + Random().nextInt(111); // skip the last easy surahs
 
     return surahNumber;
   }
 
   Future<Surah> getSurah(int surahNumber) async {
-    final response =
-        await _networkServices.get('surah/$surahNumber/ar.alafasy');
-
-    final body = json.decode(response.body);
-
-    final surah = Surah.fromJson(body['data']);
-
+    String res = await rootBundle.loadString('assets/data/surah_data.json');
+    Map<String, dynamic> json = jsonDecode(res);
+    final ayahs = Ayah.fromJsonList(json["$surahNumber"]);
+    Surah surah = Surah(ayahs);
     return surah;
   }
 }

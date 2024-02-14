@@ -3,18 +3,9 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
-import 'package:hafiz_test/services/network.services.dart';
 import 'package:hafiz_test/services/storage.services.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:hafiz_test/model/aya_model.dart';
-
-Future<File> writeJsonToFile(String jsonData) async {
-  final directory = await getApplicationDocumentsDirectory();
-  final file = File('${directory.path}/assets/data/data.json');
-  return file.writeAsString(jsonData);
-}
 
 Future<AyaModel> getAyaBySurahNo(String surahNameArabic, String ayaNo) async {
   final String response = await rootBundle.loadString('assets/quran.json');
@@ -26,7 +17,6 @@ Future<AyaModel> getAyaBySurahNo(String surahNameArabic, String ayaNo) async {
 }
 
 class AyahServices {
-  final _networkServices = NetworkServices();
   final storageServices = StorageServices();
   final favoriteServices = FavouriteServices();
   final allPages = List.generate(600, (index) => index + 1);
@@ -34,11 +24,9 @@ class AyahServices {
 
   Future<List<Ayah>> getSurahAyahs(int surahNumber) async {
     try {
-      final res = await _networkServices.get('surah/$surahNumber/ar.alafasy');
-
-      final body = json.decode(res.body);
-
-      final ayahs = Ayah.fromJsonList(body['data']['ayahs']);
+      final res = await rootBundle.loadString('assets/data/surah_data.json');
+      final body = json.decode(res);
+      final ayahs = Ayah.fromJsonList(body["$surahNumber"]);
 
       return ayahs;
     } catch (error) {
@@ -51,28 +39,27 @@ class AyahServices {
   }
 
   Future<Ayah> getRandomAyahFromJuz(int juzNumber) async {
-    bool pagetop = await storageServices.checkPageTop();
-    if (pagetop) {
-      final random = Random();
-      final page = (juzNumber - 1) * 20 + random.nextInt(20);
-      final res = await _networkServices.get('page/$page/quran-uthmani');
-      final body = json.decode(res.body);
-      if (body != null) {
-        final ayahs = Ayah.fromJsonList(body['data']['ayahs']);
+    final random = Random();
+    final favPages = await favoriteServices.getFavoritePages();
+    List<int> nonfavPages = allPages
+        .where((e) =>
+            !favPages.contains(e) &&
+            e > (juzNumber - 1) * 20 &&
+            e <= juzNumber * 20)
+        .toList();
+    final page = nonfavPages[random.nextInt(nonfavPages.length)];
+    final res = await rootBundle.loadString('assets/data/page_data.json');
+    final body = json.decode(res);
+    if (body != null) {
+      final ayahs = Ayah.fromJsonList(body[page]);
+      bool pagetop = await storageServices.checkPageTop();
+      if (pagetop) {
         return ayahs.first;
-      }
-    } else {
-      final res = await _networkServices.get('juz/$juzNumber/quran-uthmani');
-      final body = json.decode(res.body);
-
-      if (body != null) {
-        final ayahs = Ayah.fromJsonList(body['data']['ayahs']);
-        final ayah = AyahServices().getRandomAyahForSurah(ayahs);
-
-        return ayah;
+      } else {
+        final ayahIndex = random.nextInt(ayahs.length);
+        return ayahs[ayahIndex];
       }
     }
-
     return Ayah();
   }
 
@@ -86,29 +73,20 @@ class AyahServices {
     return nonFavoriteJuzs[index];
   }
 
-  Future<List<Ayah>> getPage(int? page) async {
-    if (page == null) {
-      final favPages = await favoriteServices.getFavoritePages();
-      List<int> nonFavoritePages =
-          allPages.where((e) => !favPages.contains(e)).toList();
-      if (nonFavoritePages.isEmpty) {
-        page = 1;
-      } else {
-        final random = Random();
-        final index = random.nextInt(nonFavoritePages.length);
-        page = nonFavoritePages[index];
-      }
-    }
+  Future<List<Ayah>> getPage(int page) async {
+    try {
+      final res = await rootBundle.loadString('assets/data/page_data.json');
+      final body = json.decode(res);
+      final ayahs = Ayah.fromJsonList(body[page]);
 
-    final res = await _networkServices.get('page/$page/quran-uthmani');
-    final body = json.decode(res.body);
-
-    if (body != null) {
-      final ayahs = Ayah.fromJsonList(body['data']['ayahs']);
       return ayahs;
-    }
+    } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
 
-    return [];
+      return [];
+    }
   }
 
   Future<Ayah> getRandomAyahForSurah(List<Ayah> ayahs) async {

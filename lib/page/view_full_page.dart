@@ -113,7 +113,7 @@ class _Surah extends State<PageScreen> {
                                     TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: ayah.text,
+                                          text: ayah.originalText,
                                           style: const TextStyle(
                                             color: Colors.blueGrey,
                                             fontSize: 20,
