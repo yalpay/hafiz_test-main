@@ -20,8 +20,8 @@ class _TestPage extends State<TestBySurah> {
 
   bool isLoading = false;
   bool isPlaying = false;
-
-  List<Ayah> ayahs = [];
+  bool autoplay = true;
+  late Surah surah;
   late Ayah ayah;
 
   int surahNumber = 1;
@@ -33,16 +33,12 @@ class _TestPage extends State<TestBySurah> {
     init();
   }
 
-  bool autoplay = true;
-  Surah surah = Surah();
-
   Future<void> init() async {
     setState(() => isLoading = true);
 
     surahNumber = widget.surahNumber;
     surah = await surahServices.getSurah(surahNumber);
-    ayahs = surah.ayahs;
-    ayah = await ayahServices.getRandomAyahForSurah(ayahs);
+    ayah = await ayahServices.getRandomAyahForSurah(surah.ayahs);
 
     setState(() => isLoading = false);
   }
@@ -56,6 +52,7 @@ class _TestPage extends State<TestBySurah> {
       ),
       body: Center(
         child: SingleChildScrollView(
+          key: UniqueKey(),
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -72,7 +69,6 @@ class _TestPage extends State<TestBySurah> {
                 TestScreen(
                   surah: surah,
                   ayah: ayah,
-                  ayahs: ayahs,
                   onRefresh: () async => await init(),
                 ),
             ],

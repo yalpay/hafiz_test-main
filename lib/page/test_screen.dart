@@ -12,15 +12,13 @@ import 'package:hafiz_test/data/surah_list.dart';
 class TestScreen extends StatefulWidget {
   final Surah surah;
   final Ayah ayah;
-  final List<Ayah> ayahs;
-  final Function()? onRefresh;
+  final Function() onRefresh;
 
   const TestScreen({
     Key? key,
     required this.surah,
     required this.ayah,
-    this.ayahs = const [],
-    this.onRefresh,
+    required this.onRefresh,
   }) : super(key: key);
 
   @override
@@ -30,20 +28,20 @@ class TestScreen extends StatefulWidget {
 class _TestPage extends State<TestScreen> {
   final audioPlayer = AudioPlayer();
   final storageServices = StorageServices();
+  final auidoUrl = "https://cdn.islamic.network/quran/audio/128/ar.alafasy/";
 
   final maxAyahLength = 350;
-  Surah surah = Surah();
+  late Surah surah;
   List<Ayah> ayahs = [];
   Ayah ayah = Ayah();
-
+  String audioUrl = "";
   bool isPlaying = false;
   bool autoplay = true;
 
   Future<void> init() async {
     surah = widget.surah;
     ayah = widget.ayah;
-    ayahs = widget.ayahs;
-
+    audioUrl = "${auidoUrl + ayah.number.toString()}.mp3";
     autoplay = await storageServices.checkAutoPlay();
 
     handleAudioPlay();
@@ -87,7 +85,7 @@ class _TestPage extends State<TestScreen> {
     if (mounted) {
       if (autoplay) {
         setState(() => isPlaying = true);
-        playAudio(ayah.audio);
+        playAudio(audioUrl);
       } else {
         audioPlayer.pause();
         setState(() => isPlaying = false);
@@ -137,9 +135,9 @@ class _TestPage extends State<TestScreen> {
         Padding(
           padding: const EdgeInsets.all(10),
           child: Text(
-            ayah.text.length > maxAyahLength
-                ? ayah.text.substring(0, maxAyahLength)
-                : ayah.text,
+            ayah.originalText.length > maxAyahLength
+                ? ayah.originalText.substring(0, maxAyahLength)
+                : ayah.originalText,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 25,
@@ -167,15 +165,6 @@ class _TestPage extends State<TestScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 10),
-        Text(
-          '(${surah.name})',
-          style: const TextStyle(
-            color: Colors.blueGrey,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
         const SizedBox(height: 20),
         InkWell(
           child: Icon(
@@ -184,7 +173,7 @@ class _TestPage extends State<TestScreen> {
             color: Colors.blueGrey,
           ),
           onTap: () {
-            isPlaying ? audioPlayer.pause() : playAudio(ayah.audio);
+            isPlaying ? audioPlayer.pause() : playAudio(audioUrl);
 
             isPlaying = !isPlaying;
 
@@ -279,8 +268,8 @@ class _TestPage extends State<TestScreen> {
             size: 30,
           ),
           onPressed: () async {
-            await widget.onRefresh?.call();
-            init();
+            await widget.onRefresh.call();
+            await init();
           },
         ),
       ],

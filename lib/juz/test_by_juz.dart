@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:hafiz_test/data/surah_list.dart';
 import 'package:hafiz_test/page/test_screen.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
@@ -20,26 +21,23 @@ class TestByJuz extends StatefulWidget {
 class _TestPage extends State<TestByJuz> {
   bool isLoading = false;
 
-  List<Ayah> ayahs = [];
   late Ayah ayah;
   int juzNumber = 0;
   bool autoplay = true;
-  Surah surah = Surah();
+  late Surah surah;
 
   Future<void> init() async {
     setState(() => isLoading = true);
 
-    Ayah ayahFromJuz;
     final ayahServices = AyahServices();
     juzNumber = widget.juzNumber;
 
     if (juzNumber == 0) {
       juzNumber = await ayahServices.getRandomJuz();
     }
-    ayahFromJuz = await ayahServices.getRandomAyahFromJuz(juzNumber);
-    surah = await SurahServices().getSurah(ayahFromJuz.surah!.number);
-    ayahs = surah.ayahs;
-    ayah = ayahs.firstWhere((ayah) => ayah.number == ayahFromJuz.number);
+    ayah = await ayahServices.getRandomAyahFromJuz(juzNumber);
+    int surahIndex = surahs.indexOf(ayah.surah);
+    surah = await SurahServices().getSurah(surahIndex + 1);
 
     setState(() => isLoading = false);
   }
@@ -60,6 +58,7 @@ class _TestPage extends State<TestByJuz> {
       ),
       body: Center(
         child: SingleChildScrollView(
+          key: UniqueKey(),
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -76,7 +75,6 @@ class _TestPage extends State<TestByJuz> {
                 TestScreen(
                   surah: surah,
                   ayah: ayah,
-                  ayahs: ayahs,
                   onRefresh: () async => await init(),
                 ),
             ],
