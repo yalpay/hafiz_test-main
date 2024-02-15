@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/page/view_full_page.dart';
@@ -8,6 +8,8 @@ import 'package:hafiz_test/services/storage.services.dart';
 import 'package:hafiz_test/widgets/snack_bar.dart';
 import 'package:hafiz_test/widgets/button.dart';
 import 'package:hafiz_test/data/surah_list.dart';
+import 'package:speech_to_text/speech_to_text.dart';
+import 'package:avatar_glow/avatar_glow.dart';
 
 class TestScreen extends StatefulWidget {
   final Surah surah;
@@ -27,9 +29,10 @@ class TestScreen extends StatefulWidget {
 
 class _TestPage extends State<TestScreen> {
   final audioPlayer = AudioPlayer();
+  SpeechToText speechToText = SpeechToText();
   final storageServices = StorageServices();
   final auidoUrl = "https://cdn.islamic.network/quran/audio/128/ar.alafasy/";
-
+  var isListening = false;
   final maxAyahLength = 350;
   late Surah surah;
   List<Ayah> ayahs = [];
@@ -37,13 +40,32 @@ class _TestPage extends State<TestScreen> {
   String audioUrl = "";
   bool isPlaying = false;
   bool autoplay = true;
+  String text = "Recognized words";
+
+  void checkMicrophoneAvailability() async {
+    bool available = await speechToText.initialize();
+    if (available) {
+      setState(() {
+        if (kDebugMode) {
+          print('Microphone available: $available');
+        }
+      });
+    } else {
+      if (kDebugMode) {
+        print("The user has denied the use of speech recognition.");
+      }
+    }
+  }
 
   Future<void> init() async {
+    checkMicrophoneAvailability();
+
     surah = widget.surah;
     ayah = widget.ayah;
     ayahs = widget.surah.ayahs;
     audioUrl = "${auidoUrl + ayah.number.toString()}.mp3";
     autoplay = await storageServices.checkAutoPlay();
+    text = ayah.arabicText;
 
     handleAudioPlay();
   }
@@ -118,7 +140,6 @@ class _TestPage extends State<TestScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 10),
         if (ayah.numberInSurah < ayahs.length)
           const Text(
             'Bir Sonraki Ayete Geç!',
@@ -127,11 +148,7 @@ class _TestPage extends State<TestScreen> {
               color: Colors.blueGrey,
               fontSize: 20,
             ),
-          ).animate(
-            onPlay: (controller) {
-              controller.repeat(reverse: true);
-            },
-          ).scaleXY(end: 1.5, delay: 1000.ms),
+          ),
         const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.all(10),
@@ -167,20 +184,23 @@ class _TestPage extends State<TestScreen> {
           ),
         ),
         const SizedBox(height: 20),
-        InkWell(
-          child: Icon(
-            isPlaying ? Icons.pause_circle_outline : Icons.play_circle_outline,
-            size: 80.0,
-            color: Colors.blueGrey,
+        if (isListening == false)
+          InkWell(
+            child: Icon(
+              isPlaying
+                  ? Icons.pause_circle_outline
+                  : Icons.play_circle_outline,
+              size: 80.0,
+              color: Colors.blueGrey,
+            ),
+            onTap: () {
+              isPlaying ? audioPlayer.pause() : playAudio(audioUrl);
+
+              isPlaying = !isPlaying;
+
+              setState(() {});
+            },
           ),
-          onTap: () {
-            isPlaying ? audioPlayer.pause() : playAudio(audioUrl);
-
-            isPlaying = !isPlaying;
-
-            setState(() {});
-          },
-        ),
         const SizedBox(height: 15),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -273,6 +293,56 @@ class _TestPage extends State<TestScreen> {
             await init();
           },
         ),
+        if (isPlaying == false)
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: SelectableText(
+              "Okumaya başlamak için dokun",
+              style: TextStyle(
+                  fontSize: 18,
+                  color: isListening ? Colors.black87 : Colors.black54),
+            ),
+          ),
+        if (isPlaying == false)
+          AvatarGlow(
+            animate: isListening,
+            duration: const Duration(milliseconds: 2000),
+            repeat: true,
+            child: GestureDetector(
+              onTap: () async {
+                if (!isListening) {
+                  var available = await speechToText.initialize();
+                  if (available) {
+                    setState(() {
+                      isListening = true;
+                    });
+                    speechToText.listen(
+                        listenFor: const Duration(days: 1),
+                        onResult: (result) {
+                          setState(() {
+                            text = result.recognizedWords;
+                          });
+                        });
+                  }
+                } else {
+                  setState(() {
+                    isListening = false;
+                  });
+                  speechToText.stop();
+                }
+              },
+              child: CircleAvatar(
+                radius: 30,
+                child: Icon(
+                  isListening ? Icons.mic : Icons.mic_off,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          )
       ],
     );
   }
