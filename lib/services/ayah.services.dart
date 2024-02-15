@@ -5,16 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/services/storage.services.dart';
 import 'package:flutter/services.dart';
-import 'package:hafiz_test/model/aya_model.dart';
-
-Future<AyaModel> getAyaBySurahNo(String surahNameArabic, String ayaNo) async {
-  final String response = await rootBundle.loadString('assets/quran.json');
-  List<AyaModel> quran = List<AyaModel>.from(
-      (json.decode(response)).map((element) => AyaModel.fromJson(element)));
-  var x = quran.firstWhere((element) =>
-      element.surahNameArabic == surahNameArabic && element.ayahNo == ayaNo);
-  return x;
-}
 
 class AyahServices {
   final storageServices = StorageServices();

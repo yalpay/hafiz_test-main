@@ -64,90 +64,94 @@ class SpeechProviderExampleWidgetState
             'Speech recognition not available, no permission or not available on the device.'),
       );
     }
-    return Column(children: [
-      const Center(
-        child: Text(
-          'Speech recognition available',
-          style: TextStyle(fontSize: 22.0),
+    return Column(
+      children: [
+        const Center(
+          child: Text(
+            'Speech recognition available',
+            style: TextStyle(fontSize: 22.0),
+          ),
         ),
-      ),
-      Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Positioned.fill(
-                bottom: 10,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                            blurRadius: .26,
-                            spreadRadius: speechProvider.lastLevel * 1.5,
-                            color: Colors.black.withOpacity(.05))
-                      ],
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(50)),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.mic),
-                      onPressed: !speechProvider.isAvailable ||
-                              speechProvider.isListening
-                          ? null
-                          : () => speechProvider.listen(
-                              pauseFor: Duration(seconds: pauseFor),
-                              partialResults: true,
-                              localeId: _currentLocaleId),
+        Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Positioned.fill(
+                  bottom: 10,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                              blurRadius: .26,
+                              spreadRadius: speechProvider.lastLevel * 1.5,
+                              color: Colors.black.withOpacity(.05))
+                        ],
+                        color: Colors.white,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(50),
+                        ),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.mic),
+                        onPressed: !speechProvider.isAvailable ||
+                                speechProvider.isListening
+                            ? null
+                            : () => speechProvider.listen(
+                                pauseFor: Duration(seconds: pauseFor),
+                                partialResults: true,
+                                localeId: _currentLocaleId),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      const Expanded(
-        flex: 4,
-        child: RecognitionResultsWidget(),
-      ),
-      Expanded(
-        flex: 1,
-        child: Column(
-          children: <Widget>[
-            const Center(
-              child: Text(
-                'Error Status',
-                style: TextStyle(fontSize: 22.0),
-              ),
-            ),
-            Center(
-              child: speechProvider.hasError
-                  ? Text(speechProvider.lastError!.errorMsg)
-                  : Container(),
+              ],
             ),
           ],
         ),
-      ),
-      Container(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        color: Theme.of(context).colorScheme.background,
-        child: Center(
-          child: speechProvider.isListening
-              ? const Text(
-                  "I'm listening...",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                )
-              : const Text(
-                  'Not listening',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+        const Expanded(
+          flex: 4,
+          child: RecognitionResultsWidget(),
         ),
-      ),
-    ]);
+        Expanded(
+          flex: 1,
+          child: Column(
+            children: <Widget>[
+              const Center(
+                child: Text(
+                  'Error Status',
+                  style: TextStyle(fontSize: 22.0),
+                ),
+              ),
+              Center(
+                child: speechProvider.hasError
+                    ? Text(speechProvider.lastError!.errorMsg)
+                    : Container(),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          color: Theme.of(context).colorScheme.background,
+          child: Center(
+            child: speechProvider.isListening
+                ? const Text(
+                    "I'm listening...",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
+                : const Text(
+                    'Not listening',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+          ),
+        ),
+      ],
+    );
   }
 }
