@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/data/surah_list.dart';
-import 'package:hafiz_test/page/speech_repeat.dart';
 import 'package:hafiz_test/page/test_screen.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
@@ -72,14 +71,12 @@ class _TestPage extends State<TestByJuz> {
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
                 )
-              else if (juzNumber < 5)
+              else
                 TestScreen(
                   surah: surah,
                   ayah: ayah,
                   onRefresh: () async => await init(),
                 )
-              else
-                const RepeatScreen()
             ],
           ),
         ),

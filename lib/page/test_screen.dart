@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
+import 'package:hafiz_test/page/arabic_spec.dart';
 import 'package:hafiz_test/page/view_full_page.dart';
 import 'package:hafiz_test/services/storage.services.dart';
 import 'package:hafiz_test/widgets/snack_bar.dart';
@@ -84,35 +85,36 @@ class _TestPage extends State<TestScreen> {
   Future<void> playNextAyah() async {
     if (ayah.numberInSurah >= ayahs.length) {
       showSnackBar(context, 'Sure Sonu');
-
       return;
     }
-
     ayah = ayahs[ayah.numberInSurah];
-
     handleAudioPlay();
   }
 
   Future<void> playPreviousAyah() async {
     if (ayah.numberInSurah == 1) {
       showSnackBar(context, 'Sure Başı');
-
       return;
     }
 
     ayah = ayahs[ayah.numberInSurah - 2];
-
     handleAudioPlay();
   }
 
   void handleAudioPlay() {
     if (mounted) {
       if (autoplay) {
-        setState(() => isPlaying = true);
+        setState(() {
+          isPlaying = true;
+          text = "";
+        });
         playAudio(audioUrl);
       } else {
         audioPlayer.pause();
-        setState(() => isPlaying = false);
+        setState(() {
+          isPlaying = false;
+          text = "";
+        });
       }
     }
   }
@@ -188,21 +190,30 @@ class _TestPage extends State<TestScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 10),
         if (text.isEmpty)
           Text.rich(
             TextSpan(
-              text: ' - ${ayah.numberInSurah}.Ayet',
-              style: const TextStyle(
-                color: Colors.blueGrey,
-                fontWeight: FontWeight.bold,
-              ),
+              children: [
+                TextSpan(
+                  text: surahs[surah.number - 1],
+                  style: const TextStyle(
+                    color: Colors.blueGrey,
+                  ),
+                ),
+                TextSpan(
+                  text: ' - ${ayah.numberInSurah}.Ayet',
+                  style: const TextStyle(
+                    color: Colors.blueGrey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ),
         if (text.isNotEmpty)
           Padding(
             padding: const EdgeInsets.all(10),
-            child: Text(
+            child: SelectableText(
               text,
               textAlign: TextAlign.center,
               style: const TextStyle(
@@ -211,6 +222,18 @@ class _TestPage extends State<TestScreen> {
               ),
             ),
           ),
+        if (text.isNotEmpty)
+          if ((normalize(ayahs[ayah.numberInSurah].arabicText)
+                  .contains(normalize(text)) ||
+              normalize(text)
+                  .contains(normalize(ayahs[ayah.numberInSurah].arabicText))))
+            const Text("Doğru okudunuz, tebrikler!"),
+        if (text.isNotEmpty &&
+            !normalize(ayahs[ayah.numberInSurah].arabicText)
+                .contains(normalize(text)) &&
+            !normalize(text)
+                .contains(normalize(ayahs[ayah.numberInSurah].arabicText)))
+          SelectableText(ayahs[ayah.numberInSurah].arabicText),
         const SizedBox(height: 20),
         if (isListening == false)
           InkWell(
@@ -340,6 +363,13 @@ class _TestPage extends State<TestScreen> {
                       onResult: (result) {
                         setState(() {
                           text = result.recognizedWords;
+                          if (text.isNotEmpty &&
+                              normalize(text) ==
+                                  normalize(
+                                      ayahs[ayah.numberInSurah].arabicText)) {
+                            ayah = ayahs[ayah.numberInSurah];
+                            text = "";
+                          }
                         });
                       });
                   setState(() {
