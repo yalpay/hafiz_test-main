@@ -31,7 +31,7 @@ class _TestPage extends State<TestScreen> {
   final audioPlayer = AudioPlayer();
   SpeechToText speechToText = SpeechToText();
   final storageServices = StorageServices();
-  final auidoUrl = "https://cdn.islamic.network/quran/audio/128/ar.alafasy/";
+  final audioSource = "https://cdn.islamic.network/quran/audio/128/ar.alafasy/";
   var isListening = false;
   final maxAyahLength = 350;
   late Surah surah;
@@ -40,7 +40,7 @@ class _TestPage extends State<TestScreen> {
   String audioUrl = "";
   bool isPlaying = false;
   bool autoplay = true;
-  String text = "Recognized words";
+  String text = "";
 
   void checkMicrophoneAvailability() async {
     bool available = await speechToText.initialize();
@@ -63,20 +63,21 @@ class _TestPage extends State<TestScreen> {
     surah = widget.surah;
     ayah = widget.ayah;
     ayahs = widget.surah.ayahs;
-    audioUrl = "${auidoUrl + ayah.number.toString()}.mp3";
+    audioUrl = "${audioSource + ayah.number.toString()}.mp3";
     autoplay = await storageServices.checkAutoPlay();
-    text = ayah.arabicText;
 
     handleAudioPlay();
   }
 
   Future<void> playAudio(String url) async {
-    try {
-      final speed = await storageServices.getPlaybackSpeed();
-      await audioPlayer.play(UrlSource(url));
-      audioPlayer.setPlaybackRate(double.parse(speed));
-    } catch (e) {
-      setState(() => isPlaying = false);
+    if (mounted) {
+      try {
+        final speed = await storageServices.getPlaybackSpeed();
+        await audioPlayer.play(UrlSource(url));
+        audioPlayer.setPlaybackRate(double.parse(speed));
+      } catch (e) {
+        setState(() => isPlaying = false);
+      }
     }
   }
 
@@ -136,6 +137,30 @@ class _TestPage extends State<TestScreen> {
     super.dispose();
   }
 
+  TextSpan markCharacters(String text, int index, Color color) {
+    List<TextSpan> spans = [];
+    int i;
+    for (i = 0; i < index; i++) {
+      String character = text[i];
+      spans.add(TextSpan(
+        text: character,
+        style: const TextStyle(
+          color: Colors.black,
+          fontSize: 20,
+        ),
+      ));
+    }
+    for (i = index; i < text.length && i < maxAyahLength; i++) {
+      String character = text[i];
+      spans.add(TextSpan(
+        text: character,
+        style:
+            TextStyle(color: color, fontSize: 20, fontWeight: FontWeight.bold),
+      ));
+    }
+    return TextSpan(children: spans);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -164,25 +189,28 @@ class _TestPage extends State<TestScreen> {
           ),
         ),
         const SizedBox(height: 10),
-        Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(
-                text: surahs[surah.number - 1],
-                style: const TextStyle(
-                  color: Colors.blueGrey,
-                ),
+        if (text.isEmpty)
+          Text.rich(
+            TextSpan(
+              text: ' - ${ayah.numberInSurah}.Ayet',
+              style: const TextStyle(
+                color: Colors.blueGrey,
+                fontWeight: FontWeight.bold,
               ),
-              TextSpan(
-                text: ' - ${ayah.numberInSurah}.Ayet',
-                style: const TextStyle(
-                  color: Colors.blueGrey,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        if (text.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 25,
+                color: Colors.blueGrey,
+              ),
+            ),
+          ),
         const SizedBox(height: 20),
         if (isListening == false)
           InkWell(
@@ -293,19 +321,7 @@ class _TestPage extends State<TestScreen> {
             await init();
           },
         ),
-        if (isPlaying == false)
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () {
-              FocusScope.of(context).unfocus();
-            },
-            child: SelectableText(
-              "Okumaya başlamak için dokun",
-              style: TextStyle(
-                  fontSize: 18,
-                  color: isListening ? Colors.black87 : Colors.black54),
-            ),
-          ),
+        const SizedBox(height: 20),
         if (isPlaying == false)
           AvatarGlow(
             animate: isListening,
@@ -313,25 +329,22 @@ class _TestPage extends State<TestScreen> {
             repeat: true,
             child: GestureDetector(
               onTap: () async {
-                if (!isListening) {
-                  var available = await speechToText.initialize();
-                  if (available) {
-                    setState(() {
-                      isListening = true;
-                    });
-                    speechToText.listen(
-                        listenFor: const Duration(days: 1),
-                        onResult: (result) {
-                          setState(() {
-                            text = result.recognizedWords;
-                          });
+                var available = await speechToText.initialize();
+                if (available) {
+                  setState(() {
+                    isListening = true;
+                  });
+                  await speechToText.listen(
+                      listenFor: const Duration(days: 1),
+                      localeId: 'ar_SA',
+                      onResult: (result) {
+                        setState(() {
+                          text = result.recognizedWords;
                         });
-                  }
-                } else {
+                      });
                   setState(() {
                     isListening = false;
                   });
-                  speechToText.stop();
                 }
               },
               child: CircleAvatar(
@@ -342,7 +355,7 @@ class _TestPage extends State<TestScreen> {
                 ),
               ),
             ),
-          )
+          ),
       ],
     );
   }
