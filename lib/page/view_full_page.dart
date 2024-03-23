@@ -18,6 +18,7 @@ class _Surah extends State<PageScreen> {
   bool isFavorite = false;
   final ayahServices = AyahServices();
   List<Ayah> page = [];
+  List<InlineSpan> children = [];
 
   @override
   void initState() {
@@ -30,6 +31,26 @@ class _Surah extends State<PageScreen> {
 
     page = await ayahServices.getPage(widget.ayah.page);
 
+    for (var ayah in page) {
+      children.add(TextSpan(
+        text: "   ${ayah.originalText}   ",
+        style: const TextStyle(
+          color: Colors.blueGrey,
+          fontSize: 23,
+          fontFamily: 'Quran',
+        ),
+      ));
+      children.add(TextSpan(
+        text: makeAyahNumber(ayah.numberInSurah),
+        style: const TextStyle(
+          color: Colors.blueGrey,
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Quran',
+        ),
+      ));
+    }
+
     setState(() => isLoading = false);
   }
 
@@ -41,7 +62,7 @@ class _Surah extends State<PageScreen> {
   }
 
   String getPageHeader(Ayah ayah) {
-    if (ayah.page > 590) {
+    if (ayah.page > 580) {
       return "Sayfa ${ayah.page.toString()}";
     }
     int donus = 21 - (ayah.page % 20);
@@ -91,60 +112,10 @@ class _Surah extends State<PageScreen> {
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 )
               else
-                Column(
-                  children: [
-                    ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: page.length,
-                      itemBuilder: (context, index) {
-                        final ayah = page[index];
-
-                        return InkWell(
-                          child: Container(
-                            padding: const EdgeInsets.only(
-                                left: 10, right: 20, bottom: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Expanded(
-                                  child: Text.rich(
-                                    textDirection: TextDirection.rtl,
-                                    TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: ayah.originalText,
-                                          style: const TextStyle(
-                                            color: Colors.blueGrey,
-                                            fontSize: 20,
-                                            fontFamily: 'Quran',
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: makeAyahNumber(
-                                              ayah.numberInSurah),
-                                          style: const TextStyle(
-                                            color: Colors.blueGrey,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Quran',
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const Divider(color: Colors.black);
-                      },
-                    ),
-                    const Divider(color: Colors.black),
-                  ],
+                Text.rich(
+                  style: const TextStyle(wordSpacing: 1.5, height: 1.5),
+                  textDirection: TextDirection.rtl,
+                  TextSpan(children: children),
                 ),
             ],
           ),

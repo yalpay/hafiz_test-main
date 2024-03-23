@@ -88,8 +88,8 @@ class AyahServices {
       if (pagetopEnabled) {
         List<int> topPageAyahs = [];
         for (int i = 1; i < ayahs.length; i++) {
-          if (ayahs[i].page > ayahs[i - 1].page ||
-              favPages.contains(ayahs[i].page) == false) {
+          if (ayahs[i].page > ayahs[i - 1].page &&
+              !favPages.contains(ayahs[i].page)) {
             topPageAyahs.add(i);
           }
         }

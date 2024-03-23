@@ -64,7 +64,6 @@ class _TestPage extends State<TestScreen> {
     surah = widget.surah;
     ayah = widget.ayah;
     ayahs = widget.surah.ayahs;
-    audioUrl = "${audioSource + ayah.number.toString()}.mp3";
     autoplay = await storageServices.checkAutoPlay();
 
     handleAudioPlay();
@@ -108,6 +107,7 @@ class _TestPage extends State<TestScreen> {
           isPlaying = true;
           text = "";
         });
+        audioUrl = "${audioSource + ayah.number.toString()}.mp3";
         playAudio(audioUrl);
       } else {
         audioPlayer.pause();
@@ -137,30 +137,6 @@ class _TestPage extends State<TestScreen> {
     audioPlayer.stop();
 
     super.dispose();
-  }
-
-  TextSpan markCharacters(String text, int index, Color color) {
-    List<TextSpan> spans = [];
-    int i;
-    for (i = 0; i < index; i++) {
-      String character = text[i];
-      spans.add(TextSpan(
-        text: character,
-        style: const TextStyle(
-          color: Colors.black,
-          fontSize: 20,
-        ),
-      ));
-    }
-    for (i = index; i < text.length && i < maxAyahLength; i++) {
-      String character = text[i];
-      spans.add(TextSpan(
-        text: character,
-        style:
-            TextStyle(color: color, fontSize: 20, fontWeight: FontWeight.bold),
-      ));
-    }
-    return TextSpan(children: spans);
   }
 
   @override
@@ -217,24 +193,15 @@ class _TestPage extends State<TestScreen> {
               text,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 25,
+                fontSize: 21,
                 color: Colors.blueGrey,
               ),
             ),
           ),
-        if (text.isNotEmpty)
-          if ((normalize(ayahs[ayah.numberInSurah].arabicText)
-                  .contains(normalize(text)) ||
-              normalize(text)
-                  .contains(normalize(ayahs[ayah.numberInSurah].arabicText))))
-            const Text("Doğru okudunuz, tebrikler!"),
         if (text.isNotEmpty &&
-            !normalize(ayahs[ayah.numberInSurah].arabicText)
-                .contains(normalize(text)) &&
-            !normalize(text)
-                .contains(normalize(ayahs[ayah.numberInSurah].arabicText)))
+            !areStringsEqual(ayahs[ayah.numberInSurah].arabicText, text))
           SelectableText(ayahs[ayah.numberInSurah].arabicText),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         if (isListening == false)
           InkWell(
             child: Icon(
@@ -252,7 +219,7 @@ class _TestPage extends State<TestScreen> {
               setState(() {});
             },
           ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -364,10 +331,11 @@ class _TestPage extends State<TestScreen> {
                         setState(() {
                           text = result.recognizedWords;
                           if (text.isNotEmpty &&
-                              normalize(text) ==
-                                  normalize(
-                                      ayahs[ayah.numberInSurah].arabicText)) {
+                              areStringsEqual(
+                                  ayahs[ayah.numberInSurah].arabicText, text)) {
                             ayah = ayahs[ayah.numberInSurah];
+                            audioUrl =
+                                "${audioSource + ayah.number.toString()}.mp3";
                             text = "";
                           }
                         });

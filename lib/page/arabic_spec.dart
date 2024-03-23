@@ -67,7 +67,7 @@ String normalize(String input) => input
     .replaceAll('\u065F', '') // ARABIC WAVY HAMZA BELOW
     .replaceAll('\u0670', '') // ARABIC LETTER SUPERSCRIPT ALEF
 
-    // Replace Waw Hamza Above by Waw
+// Replace Waw Hamza Above by Waw
     .replaceAll('\u0624', '\u0648')
 
     // Replace Ta Marbuta by Ha
@@ -80,4 +80,43 @@ String normalize(String input) => input
     // Replace Alifs with Hamza Above/Below and with Madda Above by Alif
     .replaceAll('\u0622', '\u0627')
     .replaceAll('\u0623', '\u0627')
-    .replaceAll('\u0625', '\u0627');
+    .replaceAll('\u0625', '\u0627')
+    // Remove wakf signs (pause signs)
+    .replaceAll('\u06E9', ''); // ARABIC PLACE OF SAJDAH
+
+String removeWaqfSigns(String text) {
+  // Remove waqf signs (you can add more as needed)
+  return text.replaceAll(RegExp(r'[⃝مـطجزصصلي]'), '');
+}
+
+bool areStringsEqual(String s1, String s2) {
+  s1 = normalize(removeWaqfSigns(s1));
+  s2 = normalize(removeWaqfSigns(s2));
+  Map<String, int> countChars(String s) {
+    Map<String, int> charCount = {};
+    for (int i = 0; i < s.length; i++) {
+      var char = s[i];
+      // Check if the character is a standard Arabic letter (ignoring special characters)
+      if (char.codeUnitAt(0) >= 0x0621 && char.codeUnitAt(0) <= 0x064A) {
+        charCount[char] = (charCount[char] ?? 0) + 1;
+      }
+    }
+    return charCount;
+  }
+
+  final Map<String, int> s1Counts = countChars(s1);
+  final Map<String, int> s2Counts = countChars(s2);
+
+  if (s1Counts.keys.toSet().difference(s2Counts.keys.toSet()).isNotEmpty ||
+      s2Counts.keys.toSet().difference(s1Counts.keys.toSet()).isNotEmpty) {
+    return false;
+  }
+
+  for (String key in s1Counts.keys) {
+    if (s1Counts[key] != s2Counts[key]) {
+      return false;
+    }
+  }
+
+  return true;
+}
