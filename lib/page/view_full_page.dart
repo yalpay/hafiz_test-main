@@ -36,7 +36,7 @@ class _Surah extends State<PageScreen> {
         text: "   ${ayah.originalText}   ",
         style: const TextStyle(
           color: Colors.blueGrey,
-          fontSize: 23,
+          fontSize: 20,
           fontFamily: 'Quran',
         ),
       ));
@@ -44,7 +44,7 @@ class _Surah extends State<PageScreen> {
         text: makeAyahNumber(ayah.numberInSurah),
         style: const TextStyle(
           color: Colors.blueGrey,
-          fontSize: 22,
+          fontSize: 20,
           fontWeight: FontWeight.bold,
           fontFamily: 'Quran',
         ),
@@ -113,7 +113,7 @@ class _Surah extends State<PageScreen> {
                 )
               else
                 Text.rich(
-                  style: const TextStyle(wordSpacing: 1.5, height: 1.5),
+                  style: const TextStyle(wordSpacing: 1.3, height: 1.8),
                   textDirection: TextDirection.rtl,
                   TextSpan(children: children),
                 ),
