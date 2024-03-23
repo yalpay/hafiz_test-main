@@ -10,10 +10,10 @@ class PageScreen extends StatefulWidget {
   const PageScreen({Key? key, required this.ayah}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _Surah();
+  State<StatefulWidget> createState() => FullPage();
 }
 
-class _Surah extends State<PageScreen> {
+class FullPage extends State<PageScreen> {
   bool isLoading = false;
   bool isFavorite = false;
   final ayahServices = AyahServices();
@@ -113,7 +113,7 @@ class _Surah extends State<PageScreen> {
                 )
               else
                 Text.rich(
-                  style: const TextStyle(wordSpacing: 1.3, height: 1.8),
+                  style: const TextStyle(wordSpacing: 1.3, height: 2),
                   textDirection: TextDirection.rtl,
                   TextSpan(children: children),
                 ),

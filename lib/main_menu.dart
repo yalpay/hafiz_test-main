@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
+import 'package:hafiz_test/entrance_pages/information.dart';
 import 'package:hafiz_test/favourites/favorites.dart';
 
 import 'package:hafiz_test/juz/juz_list_screen.dart';
 import 'package:hafiz_test/juz/test_by_juz.dart';
-import 'package:hafiz_test/settings_dialog.dart';
+import 'package:hafiz_test/entrance_pages/settings_dialog.dart';
 import 'package:hafiz_test/surah/surah_list_screen.dart';
-import 'package:hafiz_test/widgets/button.dart';
+import 'package:hafiz_test/ui/button.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -82,6 +83,19 @@ class _MainMenu extends State<MainMenu> {
                 );
               },
               icon: const Icon(Icons.settings),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) {
+                      return const InformationScreen();
+                    },
+                  ),
+                );
+              },
+              icon: const Icon(Icons.info),
             ),
           ],
         ),
