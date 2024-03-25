@@ -42,6 +42,7 @@ class _TestPage extends State<TestScreen> {
   bool isPlaying = false;
   bool autoplay = true;
   String text = "";
+  bool isReadingCorrect = false;
 
   void checkMicrophoneAvailability() async {
     bool available = await speechToText.initialize();
@@ -65,7 +66,7 @@ class _TestPage extends State<TestScreen> {
     ayah = widget.ayah;
     ayahs = widget.surah.ayahs;
     autoplay = await storageServices.checkAutoPlay();
-
+    textUntilDifferentWord(ayah.arabicText, ayah.originalText);
     handleAudioPlay();
   }
 
@@ -186,21 +187,9 @@ class _TestPage extends State<TestScreen> {
               ],
             ),
           ),
-        if (text.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: SelectableText(
-              text,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 21,
-                color: Colors.blueGrey,
-              ),
-            ),
-          ),
-        if (text.isNotEmpty &&
-            !areStringsEqual(ayahs[ayah.numberInSurah].arabicText, text))
-          SelectableText(ayahs[ayah.numberInSurah].arabicText),
+        if (text.isNotEmpty && isReadingCorrect == false)
+          SelectableText(textUntilDifferentWord(
+              ayahs[ayah.numberInSurah].arabicText, text)),
         const SizedBox(height: 10),
         if (isListening == false)
           InkWell(
@@ -330,9 +319,9 @@ class _TestPage extends State<TestScreen> {
                       onResult: (result) {
                         setState(() {
                           text = result.recognizedWords;
-                          if (text.isNotEmpty &&
-                              areStringsEqual(
-                                  ayahs[ayah.numberInSurah].arabicText, text)) {
+                          isReadingCorrect = areStringsEqual(
+                              ayahs[ayah.numberInSurah].arabicText, text);
+                          if (text.isNotEmpty && isReadingCorrect == true) {
                             ayah = ayahs[ayah.numberInSurah];
                             audioUrl =
                                 "${audioSource + ayah.number.toString()}.mp3";

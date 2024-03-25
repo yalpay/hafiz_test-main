@@ -120,3 +120,20 @@ bool areStringsEqual(String s1, String s2) {
 
   return true;
 }
+
+String textUntilDifferentWord(String s1, String s2) {
+  s1 = normalize(removeWaqfSigns(s1));
+  s2 = normalize(removeWaqfSigns(s2));
+  int minLength = s1.length < s2.length ? s1.length : s2.length;
+  for (int i = 0; i < minLength; i++) {
+    var c1 = s1.codeUnitAt(i);
+    var c2 = s2.codeUnitAt(i);
+    if (c1 >= 0x0621 && c1 <= 0x064A && c2 >= 0x0621 && c2 <= 0x064A) {
+      if (c1 != c2) {
+        return s2.substring(0, i);
+      }
+    }
+  }
+
+  return "";
+}
