@@ -1,16 +1,17 @@
+import 'dart:math';
+
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/page/arabic_spec.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:hafiz_test/page/view_full_page.dart';
 import 'package:hafiz_test/services/storage.services.dart';
 import 'package:hafiz_test/ui/snack_bar.dart';
 import 'package:hafiz_test/ui/button.dart';
 import 'package:hafiz_test/data/surah_list.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import 'package:avatar_glow/avatar_glow.dart';
 
 class TestScreen extends StatefulWidget {
   final Surah surah;
@@ -30,10 +31,8 @@ class TestScreen extends StatefulWidget {
 
 class _TestPage extends State<TestScreen> {
   final audioPlayer = AudioPlayer();
-  SpeechToText speechToText = SpeechToText();
   final storageServices = StorageServices();
   final audioSource = "https://cdn.islamic.network/quran/audio/128/ar.alafasy/";
-  var isListening = false;
   final maxAyahLength = 350;
   late Surah surah;
   List<Ayah> ayahs = [];
@@ -43,24 +42,32 @@ class _TestPage extends State<TestScreen> {
   bool autoplay = true;
   String text = "";
   bool isReadingCorrect = false;
+  bool _hasSpeech = false;
+  double level = 0.0;
+  double minSoundLevel = 50000;
+  double maxSoundLevel = -50000;
+  String lastStatus = '';
+  final String _currentLocaleId = 'ar_SA';
+  final SpeechToText speech = SpeechToText();
 
-  void checkMicrophoneAvailability() async {
-    bool available = await speechToText.initialize();
-    if (available) {
+  Future<void> initSpeechState() async {
+    try {
+      var hasSpeech = await speech.initialize();
+
+      if (!mounted) return;
+
       setState(() {
-        if (kDebugMode) {
-          print('Microphone available: $available');
-        }
+        _hasSpeech = hasSpeech;
       });
-    } else {
-      if (kDebugMode) {
-        print("The user has denied the use of speech recognition.");
-      }
+    } catch (e) {
+      setState(() {
+        _hasSpeech = false;
+      });
     }
   }
 
   Future<void> init() async {
-    checkMicrophoneAvailability();
+    initSpeechState();
 
     surah = widget.surah;
     ayah = widget.ayah;
@@ -120,6 +127,41 @@ class _TestPage extends State<TestScreen> {
     }
   }
 
+  void startListening() {
+    text = '';
+    final options = SpeechListenOptions(
+        listenMode: ListenMode.confirmation,
+        cancelOnError: true,
+        partialResults: true,
+        autoPunctuation: true,
+        enableHapticFeedback: true);
+    speech.listen(
+      onResult: resultListener,
+      listenFor: const Duration(seconds: 30),
+      pauseFor: const Duration(seconds: 3),
+      localeId: _currentLocaleId,
+      onSoundLevelChange: soundLevelListener,
+      listenOptions: options,
+    );
+    setState(() {});
+  }
+
+  void resultListener(SpeechRecognitionResult result) {
+    setState(() {
+      text = result.recognizedWords;
+      isReadingCorrect =
+          areStringsEqual(ayahs[ayah.numberInSurah].arabicText, text);
+    });
+  }
+
+  void soundLevelListener(double level) {
+    minSoundLevel = min(minSoundLevel, level);
+    maxSoundLevel = max(maxSoundLevel, level);
+    setState(() {
+      this.level = level;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -167,31 +209,42 @@ class _TestPage extends State<TestScreen> {
             ),
           ),
         ),
-        if (text.isEmpty)
-          Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: surahs[surah.number - 1],
-                  style: const TextStyle(
-                    color: Colors.blueGrey,
-                  ),
+        Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: surahs[surah.number - 1],
+                style: const TextStyle(
+                  color: Colors.blueGrey,
                 ),
-                TextSpan(
-                  text: ' - ${ayah.numberInSurah}.Ayet',
-                  style: const TextStyle(
-                    color: Colors.blueGrey,
-                    fontWeight: FontWeight.bold,
-                  ),
+              ),
+              TextSpan(
+                text: ' - ${ayah.numberInSurah}.Ayet',
+                style: const TextStyle(
+                  color: Colors.blueGrey,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+        ),
+        if (text.isNotEmpty && isReadingCorrect)
+          const Icon(
+            Icons.check,
+            size: 50.0,
+            color: Colors.green,
+          ),
+        if (speech.isListening == false &&
+            text.isNotEmpty &&
+            isReadingCorrect == false)
+          SelectableText(
+              "Ayet:${ayahs[ayah.numberInSurah].arabicText}\nOkuyuşunuz:$text"),
+        const SizedBox(height: 10),
         if (text.isNotEmpty && isReadingCorrect == false)
           SelectableText(textUntilDifferentWord(
               ayahs[ayah.numberInSurah].arabicText, text)),
         const SizedBox(height: 10),
-        if (isListening == false)
+        if (speech.isListening == false)
           InkWell(
             child: Icon(
               isPlaying
@@ -300,50 +353,59 @@ class _TestPage extends State<TestScreen> {
             await init();
           },
         ),
-        const SizedBox(height: 20),
-        if (isPlaying == false)
-          AvatarGlow(
-            animate: isListening,
-            duration: const Duration(milliseconds: 2000),
-            repeat: true,
-            child: GestureDetector(
-              onTap: () async {
-                var available = await speechToText.initialize();
-                if (available) {
-                  setState(() {
-                    isListening = true;
-                  });
-                  await speechToText.listen(
-                      listenFor: const Duration(days: 1),
-                      localeId: 'ar_SA',
-                      onResult: (result) {
-                        setState(() {
-                          text = result.recognizedWords;
-                          isReadingCorrect = areStringsEqual(
-                              ayahs[ayah.numberInSurah].arabicText, text);
-                          if (text.isNotEmpty && isReadingCorrect == true) {
-                            ayah = ayahs[ayah.numberInSurah];
-                            audioUrl =
-                                "${audioSource + ayah.number.toString()}.mp3";
-                            text = "";
-                          }
-                        });
-                      });
-                  setState(() {
-                    isListening = false;
-                  });
-                }
-              },
-              child: CircleAvatar(
-                radius: 30,
-                child: Icon(
-                  isListening ? Icons.mic : Icons.mic_off,
-                  color: Colors.red,
-                ),
-              ),
+        const SizedBox(height: 10),
+        SpeechControlWidget(_hasSpeech, speech.isListening, startListening),
+        SpeechStatusWidget(speech: speech),
+      ],
+    );
+  }
+}
+
+class SpeechControlWidget extends StatelessWidget {
+  const SpeechControlWidget(
+      this.hasSpeech, this.isListening, this.startListening,
+      {Key? key})
+      : super(key: key);
+
+  final bool hasSpeech;
+  final bool isListening;
+  final void Function() startListening;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        TextButton(
+          onPressed: !hasSpeech || isListening ? null : startListening,
+          child: const CircleAvatar(
+            radius: 30,
+            child: Icon(
+              Icons.mic,
             ),
           ),
+        ),
       ],
+    );
+  }
+}
+
+class SpeechStatusWidget extends StatelessWidget {
+  const SpeechStatusWidget({
+    Key? key,
+    required this.speech,
+  }) : super(key: key);
+
+  final SpeechToText speech;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Theme.of(context).colorScheme.background,
+      child: Center(
+        child:
+            speech.isListening ? const Text("Dinliyor..") : const Text("Kayıt"),
+      ),
     );
   }
 }
