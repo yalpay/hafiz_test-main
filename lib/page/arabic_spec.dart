@@ -122,6 +122,7 @@ bool areStringsEqual(String s1, String s2) {
 }
 
 String textUntilDifferentWord(String s1, String s2) {
+  String orig = s1;
   s1 = normalize(removeWaqfSigns(s1));
   s2 = normalize(removeWaqfSigns(s2));
   int minLength = s1.length < s2.length ? s1.length : s2.length;
@@ -130,7 +131,7 @@ String textUntilDifferentWord(String s1, String s2) {
     var c2 = s2.codeUnitAt(i);
     if (c1 >= 0x0621 && c1 <= 0x064A && c2 >= 0x0621 && c2 <= 0x064A) {
       if (c1 != c2) {
-        return "Doğru kısım:${s2.substring(0, i)}";
+        return "Doğru kısım:${orig.substring(0, i)}";
       }
     }
   }
