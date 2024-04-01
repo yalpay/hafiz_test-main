@@ -73,7 +73,6 @@ class _TestPage extends State<TestScreen> {
     ayah = widget.ayah;
     ayahs = widget.surah.ayahs;
     autoplay = await storageServices.checkAutoPlay();
-    textUntilDifferentWord(ayah.arabicText, ayah.originalText);
     handleAudioPlay();
   }
 
@@ -128,6 +127,7 @@ class _TestPage extends State<TestScreen> {
   }
 
   void startListening() {
+    if (!mounted) return;
     text = '';
     final options = SpeechListenOptions(
         listenMode: ListenMode.confirmation,
@@ -137,8 +137,8 @@ class _TestPage extends State<TestScreen> {
         enableHapticFeedback: true);
     speech.listen(
       onResult: resultListener,
-      listenFor: const Duration(seconds: 30),
-      pauseFor: const Duration(seconds: 3),
+      listenFor: const Duration(seconds: 70),
+      pauseFor: const Duration(seconds: 4),
       localeId: _currentLocaleId,
       onSoundLevelChange: soundLevelListener,
       listenOptions: options,
@@ -240,9 +240,6 @@ class _TestPage extends State<TestScreen> {
           SelectableText(
               "Ayet:${ayahs[ayah.numberInSurah].arabicText}\nOkuyuşunuz:$text"),
         const SizedBox(height: 10),
-        if (text.isNotEmpty && isReadingCorrect == false)
-          SelectableText(textUntilDifferentWord(
-              ayahs[ayah.numberInSurah].arabicText, text)),
         const SizedBox(height: 10),
         if (speech.isListening == false)
           InkWell(
