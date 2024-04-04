@@ -93,6 +93,8 @@ class _TestPage extends State<TestScreen> {
       showSnackBar(context, 'Sure Sonu');
       return;
     }
+
+    if (isPlaying) audioPlayer.stop();
     ayah = ayahs[ayah.numberInSurah];
     handleAudioPlay();
   }
@@ -103,6 +105,7 @@ class _TestPage extends State<TestScreen> {
       return;
     }
 
+    if (isPlaying) audioPlayer.stop();
     ayah = ayahs[ayah.numberInSurah - 2];
     handleAudioPlay();
   }
@@ -251,10 +254,10 @@ class _TestPage extends State<TestScreen> {
               color: Colors.blueGrey,
             ),
             onTap: () {
-              isPlaying ? audioPlayer.pause() : playAudio(audioUrl);
-
-              isPlaying = !isPlaying;
-
+              if (mounted) {
+                isPlaying ? audioPlayer.pause() : playAudio(audioUrl);
+                isPlaying = !isPlaying;
+              }
               setState(() {});
             },
           ),
@@ -351,8 +354,9 @@ class _TestPage extends State<TestScreen> {
           },
         ),
         const SizedBox(height: 10),
-        SpeechControlWidget(_hasSpeech, speech.isListening, startListening),
-        SpeechStatusWidget(speech: speech),
+        if (isPlaying == false)
+          SpeechControlWidget(_hasSpeech, speech.isListening, startListening),
+        if (isPlaying == false) SpeechStatusWidget(speech: speech),
       ],
     );
   }
